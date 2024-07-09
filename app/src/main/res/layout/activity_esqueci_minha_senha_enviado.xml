@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EsqueciMinhaSenhaEnviadoActivity">
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="#1565C7"
+        android:text="FaceBlog"
+        android:textColor="#ffffff"
+        android:textColorLink="#ffffff"
+        android:textSize="70sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
+
+    <TextView
+        android:id="@+id/rodape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="All copyrights reserved to FaceBlog"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.50"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/tituloEmail"
+        android:layout_width="280dp"
+        android:layout_height="200dp"
+        android:text="Email enviado com sucesso, por favor verifique sua caixa de entrada para continuar login!"
+        android:textSize="30sp"
+        app:layout_constraintBottom_toTopOf="@+id/rodape"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.50"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <Button
+        android:id="@+id/voltar"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:backgroundTint="#1565C6"
+        android:text="Voltar para página de login"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/rodape"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tituloEmail"
+        app:layout_constraintVertical_bias="0.067" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
