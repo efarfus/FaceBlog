@@ -11,9 +11,7 @@ data class User(
     override fun authenticate(email: String, password: String): Boolean {
         if (this.email == email && this.password == password) {
             return true
-        }
-        else
-        {
+        } else {
             return false
         }
     }
