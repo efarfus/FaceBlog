@@ -1,7 +1,11 @@
 package com.angellira.eduardoApp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -24,11 +28,32 @@ class LoginActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val pagMain = Intent(this, MainActivity::class.java)
 
+        val sharedPref = getPreferences(Context.MODE_PRIVATE)
+        val logou = sharedPref.getBoolean("logou", false)
+
+        if (logou)
+        {
+            startActivity(pagMain)
+        }
+
+        dataIntent()
+
+        val caixaEmail = binding.boxEmail
+        val caixaSenha = binding.boxSenha
+        val envioEmailSenha = binding.logar
+
+        logar(envioEmailSenha, caixaEmail, caixaSenha, sharedPref, pagMain)
+
+        cadastrar()
+
+        esquecerSenha()
+    }
+
+    private fun dataIntent() {
         val dadoEmail = intent.getStringExtra("dadoEmail")
         user.email = dadoEmail.toString()
 
@@ -36,16 +61,33 @@ class LoginActivity : AppCompatActivity() {
         user.password = dadoSenha.toString()
 
         user.name = intent.getStringExtra("dadoNome").toString()
+    }
 
-        val caixaEmail = binding.boxEmail
-        val caixaSenha = binding.boxSenha
-        val envioEmailSenha = binding.logar
+    private fun esquecerSenha() {
+        binding.esqueceuSenha.setOnClickListener {
+            startActivity(Intent(this, EsqueciMinhaSenhaActivity::class.java))
+        }
+    }
 
+    private fun cadastrar() {
+        binding.cadastrar.setOnClickListener {
+            startActivity(Intent(this, CadastroActivity::class.java))
+        }
+    }
+
+    private fun logar(
+        envioEmailSenha: Button,
+        caixaEmail: EditText,
+        caixaSenha: EditText,
+        sharedPref: SharedPreferences,
+        pagMain: Intent
+    ) {
         envioEmailSenha.setOnClickListener {
             val emailTentado = caixaEmail.text.toString()
             val senhaTentada = caixaSenha.text.toString()
 
             if (user.authenticate(emailTentado, senhaTentada)) {
+                sharedPref.edit().putBoolean("logou", true).apply()
                 pagMain.putExtra("dadoNome", user.name)
                 startActivity(pagMain)
                 caixaEmail.text.clear()
@@ -54,14 +96,6 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Email ou senha incorretos", Toast.LENGTH_LONG).show()
                 caixaSenha.text.clear()
             }
-        }
-
-        binding.cadastrar.setOnClickListener {
-            startActivity(Intent(this, CadastroActivity::class.java))
-        }
-
-        binding.esqueceuSenha.setOnClickListener {
-            startActivity(Intent(this, EsqueciMinhaSenhaActivity::class.java))
         }
     }
 
