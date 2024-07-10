@@ -19,14 +19,19 @@ class EsqueciMinhaSenhaEnviadoActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        binding()
+        voltar()
+    }
+
+    private fun binding() {
         binding = ActivityEsqueciMinhaSenhaEnviadoBinding.inflate(layoutInflater)
         setContentView(binding.root)
+    }
 
-
-
+    private fun voltar() {
         binding.voltar.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
-
     }
 }

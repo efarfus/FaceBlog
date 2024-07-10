@@ -28,17 +28,10 @@ class LoginActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding()
         val pagMain = Intent(this, MainActivity::class.java)
 
-        val sharedPref = getPreferences(Context.MODE_PRIVATE)
-        val logou = sharedPref.getBoolean("logou", false)
-
-        if (logou)
-        {
-            startActivity(pagMain)
-        }
+        val sharedPref = sharedPreferences(pagMain)
 
         dataIntent()
 
@@ -46,11 +39,28 @@ class LoginActivity : AppCompatActivity() {
         val caixaSenha = binding.boxSenha
         val envioEmailSenha = binding.logar
 
-        logar(envioEmailSenha, caixaEmail, caixaSenha, sharedPref, pagMain)
+        if (sharedPref != null) {
+            logar(envioEmailSenha, caixaEmail, caixaSenha, sharedPref, pagMain)
+        }
 
         cadastrar()
 
         esquecerSenha()
+    }
+
+    private fun sharedPreferences(pagMain: Intent): SharedPreferences? {
+        val sharedPref = getPreferences(MODE_PRIVATE)
+        val logou = sharedPref.getBoolean("logou", false)
+
+        if (logou) {
+            startActivity(pagMain)
+        }
+        return sharedPref
+    }
+
+    private fun binding() {
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 
     private fun dataIntent() {

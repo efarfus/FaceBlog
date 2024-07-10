@@ -6,9 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.angellira.eduardoApp.model.Produto
 import com.angellira.eduardoApp.model.ProductAdapter
+import com.angellira.eduardoApp.databinding.ActivityMarketplaceBinding
+
 
 class MarketplaceActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMarketplaceBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ProductAdapter
     private val produtoLists = listOf(
@@ -20,10 +23,16 @@ class MarketplaceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_marketplace)
+        binding()
 
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = ProductAdapter(produtoLists)
         recyclerView.adapter = adapter
+    }
+
+    private fun binding() {
+        binding = ActivityMarketplaceBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 }

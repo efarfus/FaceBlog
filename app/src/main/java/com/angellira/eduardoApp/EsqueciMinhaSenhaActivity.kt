@@ -20,12 +20,18 @@ class EsqueciMinhaSenhaActivity : AppCompatActivity() {
             insets
         }
 
-        //pesquisar o inflate
-        binding = ActivityEsqueciMinhaSenhaBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding()
+        enviar()
+    }
 
+    private fun enviar() {
         binding.enviar.setOnClickListener {
             startActivity(Intent(this, EsqueciMinhaSenhaEnviadoActivity::class.java))
         }
+    }
+
+    private fun binding() {
+        binding = ActivityEsqueciMinhaSenhaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 }

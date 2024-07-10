@@ -1,6 +1,8 @@
 package com.angellira.eduardoApp
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -23,11 +25,26 @@ class CadastroActivity : AppCompatActivity() {
             insets
         }
 
+        binding()
+
+        val user = User()
+        val intent = Intent(this, LoginActivity::class.java)
+        val sharedPreferences = getSharedPreferences("user",Context.MODE_PRIVATE)
+
+        cadastrar(user, intent, sharedPreferences)
+
+    }
+
+    private fun binding() {
         binding = ActivityCadastroBinding.inflate(layoutInflater)
         setContentView(binding.root)
+    }
 
-        val intent = Intent(this, LoginActivity::class.java)
-
+    private fun cadastrar(
+        user: User,
+        intent: Intent,
+        sharedPreferences: SharedPreferences
+    ) {
         binding.cadastrar.setOnClickListener {
             user.name = binding.boxNome.text.toString()
             user.email = binding.boxEmail.text.toString()
@@ -38,7 +55,10 @@ class CadastroActivity : AppCompatActivity() {
                 intent.putExtra("dadoNome", user.name)
                 intent.putExtra("dadoEmail", user.email)
                 intent.putExtra("dadoSenha", user.password)
-                //teste
+                with(sharedPreferences.edit()) {
+                    putString("name", user.name)
+                    apply()
+                }
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Senhas não coincidem", Toast.LENGTH_LONG).show()
@@ -46,6 +66,5 @@ class CadastroActivity : AppCompatActivity() {
                 binding.boxConfirmarSenha.text.clear()
             }
         }
-
     }
 }

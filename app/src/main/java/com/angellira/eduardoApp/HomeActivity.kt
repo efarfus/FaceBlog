@@ -1,5 +1,7 @@
 package com.angellira.eduardoApp
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -12,6 +14,7 @@ import com.angellira.eduardoApp.model.User
 class MainActivity : AppCompatActivity() {
     private val user = User()
     private lateinit var binding: ActivityMainBinding
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,9 +27,10 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        val sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE)
+        user.name = sharedPreferences.getString("name", null).toString()
         val bemVindoBox = binding.bemVindo
-        user.name = intent.getStringExtra("dadoNome").toString()
+
         val MarketplaceActivity = Intent(this, MarketplaceActivity::class.java)
 
         bemVindoBox.setText("Bem vindo ${user.name}!")
@@ -35,4 +39,5 @@ class MainActivity : AppCompatActivity() {
             startActivity(MarketplaceActivity)
         }
     }
+
 }
