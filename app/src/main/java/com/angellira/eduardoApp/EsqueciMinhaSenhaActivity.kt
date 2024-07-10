@@ -21,7 +21,7 @@ class EsqueciMinhaSenhaActivity : AppCompatActivity() {
         }
 
         //pesquisar o inflate
-        binding = ActivityEsqueciMinhaSenhaBinding.inflate(layoutInflater)//aaaaaa
+        binding = ActivityEsqueciMinhaSenhaBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.enviar.setOnClickListener {

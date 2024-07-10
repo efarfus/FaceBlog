@@ -37,7 +37,8 @@ class CadastroActivity : AppCompatActivity() {
             if (user.password == user.passwordConfirmation) {
                 intent.putExtra("dadoNome", user.name)
                 intent.putExtra("dadoEmail", user.email)
-                intent.putExtra("dadoSenhaaaaaaaaaaaaaaaaaaaaaaaa", user.password)
+                intent.putExtra("dadoSenha", user.password)
+                //teste
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Senhas não coincidem", Toast.LENGTH_LONG).show()
