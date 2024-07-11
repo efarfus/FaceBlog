@@ -32,11 +32,16 @@ class MainActivity : AppCompatActivity() {
         val bemVindoBox = binding.bemVindo
 
         val MarketplaceActivity = Intent(this, MarketplaceActivity::class.java)
+        val ProfileActivity = Intent(this, ProfileActivity::class.java)
 
-        bemVindoBox.setText("Bem vindo ${user.name}!")
+        bemVindoBox.setText("Bem vindo! ${user.name}!")
 
         binding.options.setOnClickListener {
             startActivity(MarketplaceActivity)
+        }
+
+        binding.profile1.setOnClickListener {
+            startActivity(ProfileActivity)
         }
     }
 

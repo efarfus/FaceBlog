@@ -1,6 +1,5 @@
 package com.angellira.eduardoApp
 
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -54,6 +53,7 @@ class LoginActivity : AppCompatActivity() {
 
         if (logou) {
             startActivity(pagMain)
+            finish()
         }
         return sharedPref
     }

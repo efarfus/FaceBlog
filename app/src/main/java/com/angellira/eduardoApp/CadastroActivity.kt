@@ -14,7 +14,6 @@ import com.angellira.eduardoApp.model.User
 
 class CadastroActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCadastroBinding
-    private val user = User()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -57,6 +56,8 @@ class CadastroActivity : AppCompatActivity() {
                 intent.putExtra("dadoSenha", user.password)
                 with(sharedPreferences.edit()) {
                     putString("name", user.name)
+                    putString("email", user.email)
+                    putString("senha", user.password)
                     apply()
                 }
                 startActivity(intent)
