@@ -1,5 +1,6 @@
 package com.angellira.eduardoApp
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -48,7 +49,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun sharedPreferences(pagMain: Intent): SharedPreferences? {
-        val sharedPref = getPreferences(MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("user", Context.MODE_PRIVATE)
         val logou = sharedPref.getBoolean("logou", false)
 
         if (logou) {
