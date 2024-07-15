@@ -50,7 +50,7 @@ class CadastroActivity : AppCompatActivity() {
             user.password = binding.boxSenha.text.toString()
             user.passwordConfirmation = binding.boxConfirmarSenha.text.toString()
 
-            if (user.password == user.passwordConfirmation) {
+            if (user.password == user.passwordConfirmation && user.email != "" && user.name != "") {
                 intent.putExtra("dadoNome", user.name)
                 intent.putExtra("dadoEmail", user.email)
                 intent.putExtra("dadoSenha", user.password)
