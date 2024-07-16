@@ -57,10 +57,9 @@ class CadastroActivity : AppCompatActivity() {
                 intent.putExtra("dadoEmail", user.email)
                 intent.putExtra("dadoSenha", user.password)
                 with(sharedPreferences.edit()) {
-                    putString("name", user.name)
-                    putString("email", user.email)
-                    putString("senha", user.password)
-                    apply()
+                    putString("name", user.name).apply()
+                    putString("email", user.email).apply()
+                    putString("senha", user.password).apply()
                 }
                 startActivity(intent)
             } else {

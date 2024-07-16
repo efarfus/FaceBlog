@@ -15,9 +15,9 @@ class MarketplaceActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ProductAdapter
     private val produtoLists = listOf(
-        Produto("Chevette", "R$17000,00", R.drawable.chevette),
-        Produto("Opala", "R$20000,00", R.drawable.opala),
-        Produto("Gol quadrado", "R$10000,00", R.drawable.golquadrado)
+        Produto("Chevette", "R$17.000,00", R.drawable.chevette),
+        Produto("Opala", "R$20.000,00", R.drawable.opala),
+        Produto("Gol quadrado", "R$10.000,00", R.drawable.golquadrado)
         )
 
     override fun onCreate(savedInstanceState: Bundle?) {

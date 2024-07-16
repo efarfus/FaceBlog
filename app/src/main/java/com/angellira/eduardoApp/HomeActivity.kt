@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE)
-        user.name = sharedPreferences.getString("name", null).toString()
+        user.name = sharedPreferences.getString("name", user.name).toString()
         val bemVindoBox = binding.bemVindo
 
         val MarketplaceActivity = Intent(this, MarketplaceActivity::class.java)
