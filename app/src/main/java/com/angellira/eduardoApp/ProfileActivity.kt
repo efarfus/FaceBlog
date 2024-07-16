@@ -27,7 +27,9 @@ class ProfileActivity : AppCompatActivity() {
             insets
         }
 
-        val pagLogin = Intent(this, LoginActivity::class.java)
+        val pagLogin = Intent(this, LoginActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
 
 
         binding()
@@ -46,8 +48,9 @@ class ProfileActivity : AppCompatActivity() {
 
             editor.clear().apply()
             editor.putBoolean("logou", false).apply()
-            startActivity(pagLogin)
             finish()
+            startActivity(pagLogin)
+
         }
 
     }
