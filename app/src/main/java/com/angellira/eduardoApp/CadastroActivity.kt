@@ -63,7 +63,7 @@ class CadastroActivity : AppCompatActivity() {
                 }
                 startActivity(intent)
             } else {
-                Toast.makeText(this, "Senhas não coincidem", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Dados estão incorretos, tente novamente", Toast.LENGTH_LONG).show()
                 binding.boxSenha.text.clear()
                 binding.boxConfirmarSenha.text.clear()
             }
