@@ -20,19 +20,15 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_profile)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        binding()
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        val pagLogin = Intent(this, LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+        val pagLogin = Intent(this, LoginActivity::class.java)
 
-
-        binding()
         val sharedPreferences = getSharedPreferences("user", MODE_PRIVATE)
         user.name = sharedPreferences.getString("name", null).toString()
         val nomeTextBox = binding.nome
@@ -42,17 +38,23 @@ class ProfileActivity : AppCompatActivity() {
         val senhaTextBox = binding.senha
 
         showDataUser(nomeTextBox, emailTextBox, senhaTextBox)
+        deslogar(sharedPreferences, pagLogin)
+
+    }
+
+    private fun deslogar(
+        sharedPreferences: SharedPreferences,
+        pagLogin: Intent
+    ) {
         val buttonLogOff = binding.deslogar
         buttonLogOff.setOnClickListener {
             val editor: SharedPreferences.Editor = sharedPreferences.edit()
 
             editor.clear().apply()
             editor.putBoolean("logou", false).apply()
-            finish()
             startActivity(pagLogin)
-
+            finishAffinity()
         }
-
     }
 
     private fun showDataUser(
