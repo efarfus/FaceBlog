@@ -11,9 +11,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.angellira.eduardoApp.databinding.ActivityCadastroBinding
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.preferences.Preferences
 
 class CadastroActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCadastroBinding
+    private val prefs by lazy { Preferences(this) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -28,10 +31,9 @@ class CadastroActivity : AppCompatActivity() {
 
         val user = User()
         val intent = Intent(this, LoginActivity::class.java)
-        val sharedPreferences = getSharedPreferences("user",Context.MODE_PRIVATE)
 
-        cadastrar(user, intent, sharedPreferences)
 
+        cadastrar(user, intent)
     }
 
     private fun binding() {
@@ -41,8 +43,7 @@ class CadastroActivity : AppCompatActivity() {
 
     private fun cadastrar(
         user: User,
-        intent: Intent,
-        sharedPreferences: SharedPreferences
+        intent: Intent
     ) {
         binding.cadastrar.setOnClickListener {
             user.name = binding.boxNome.text.toString()
@@ -51,14 +52,9 @@ class CadastroActivity : AppCompatActivity() {
             user.passwordConfirmation = binding.boxConfirmarSenha.text.toString()
 
             if (user.password == user.passwordConfirmation && user.email != "" && user.name != "") {
-                intent.putExtra("dadoNome", user.name)
-                intent.putExtra("dadoEmail", user.email)
-                intent.putExtra("dadoSenha", user.password)
-                with(sharedPreferences.edit()) {
-                    putString("name", user.name).apply()
-                    putString("email", user.email).apply()
-                    putString("senha", user.password).apply()
-                }
+                prefs.name = user.name
+                prefs.email = user.email
+                prefs.password = user.password
                 startActivity(intent)
                 finishAffinity()
             } else {

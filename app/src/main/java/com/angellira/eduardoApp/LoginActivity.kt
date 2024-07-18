@@ -1,5 +1,6 @@
 package com.angellira.eduardoApp
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -13,12 +14,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.angellira.eduardoApp.databinding.ActivityLoginBinding
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.preferences.Preferences
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val user = User()
+    private val prefs by lazy { Preferences(this) }
 
+
+    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,8 +43,9 @@ class LoginActivity : AppCompatActivity() {
         val caixaSenha = binding.boxSenha
         val envioEmailSenha = binding.logar
 
-        if (sharedPref != null) {
-            logar(envioEmailSenha, caixaEmail, caixaSenha, sharedPref, pagMain)
+        if (sharedPref != null)
+        run {
+            logar(envioEmailSenha, caixaEmail, caixaSenha, pagMain)
         }
 
         cadastrar()
@@ -47,15 +53,13 @@ class LoginActivity : AppCompatActivity() {
         esquecerSenha()
     }
 
-    private fun sharedPreferences(pagMain: Intent): SharedPreferences? {
-        val sharedPref = getSharedPreferences("user", Context.MODE_PRIVATE)
-        val logou = sharedPref.getBoolean("logou", false)
-
+    private fun sharedPreferences(pagMain: Intent): Preferences {
+        val logou = prefs.isLogged
         if (logou) {
             startActivity(pagMain)
             finish()
         }
-        return sharedPref
+        return prefs
     }
 
     private fun binding() {
@@ -64,13 +68,11 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun dataIntent() {
-        val dadoEmail = intent.getStringExtra("dadoEmail")
-        user.email = dadoEmail.toString()
+        user.email = prefs.email.toString()
 
-        val dadoSenha = intent.getStringExtra("dadoSenha")
-        user.password = dadoSenha.toString()
+        user.password = prefs.password.toString()
 
-        user.name = intent.getStringExtra("dadoNome").toString()
+        user.name = prefs.name.toString()
     }
 
     private fun esquecerSenha() {
@@ -89,7 +91,6 @@ class LoginActivity : AppCompatActivity() {
         envioEmailSenha: Button,
         caixaEmail: EditText,
         caixaSenha: EditText,
-        sharedPref: SharedPreferences,
         pagMain: Intent
     ) {
         envioEmailSenha.setOnClickListener {
@@ -97,8 +98,7 @@ class LoginActivity : AppCompatActivity() {
             val senhaTentada = caixaSenha.text.toString()
 
             if (user.authenticate(emailTentado, senhaTentada)) {
-                sharedPref.edit().putBoolean("logou", true).apply()
-                pagMain.putExtra("dadoNome", user.name)
+                prefs.isLogged = true
                 startActivity(pagMain)
                 caixaEmail.text.clear()
                 caixaSenha.text.clear()
