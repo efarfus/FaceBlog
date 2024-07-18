@@ -17,19 +17,17 @@ class CadastroActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_cadastro)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        binding()
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        binding()
 
         val user = User()
-        val intent = Intent(this, LoginActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
+        val intent = Intent(this, LoginActivity::class.java)
         val sharedPreferences = getSharedPreferences("user",Context.MODE_PRIVATE)
 
         cadastrar(user, intent, sharedPreferences)
@@ -57,14 +55,14 @@ class CadastroActivity : AppCompatActivity() {
                 intent.putExtra("dadoEmail", user.email)
                 intent.putExtra("dadoSenha", user.password)
                 with(sharedPreferences.edit()) {
-                    putString("name", user.name)
-                    putString("email", user.email)
-                    putString("senha", user.password)
-                    apply()
+                    putString("name", user.name).apply()
+                    putString("email", user.email).apply()
+                    putString("senha", user.password).apply()
                 }
                 startActivity(intent)
+                finishAffinity()
             } else {
-                Toast.makeText(this, "Senhas não coincidem", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Dados estão incorretos, tente novamente", Toast.LENGTH_LONG).show()
                 binding.boxSenha.text.clear()
                 binding.boxConfirmarSenha.text.clear()
             }
