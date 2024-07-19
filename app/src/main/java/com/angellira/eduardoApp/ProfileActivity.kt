@@ -1,7 +1,7 @@
 package com.angellira.eduardoApp
 
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -10,12 +10,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.angellira.eduardoApp.databinding.ActivityProfileBinding
 import com.angellira.eduardoApp.model.User
-
+import com.angellira.eduardoApp.preferences.Preferences
 
 
 class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private val user = User()
+    private val prefs by lazy { Preferences(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,34 +30,32 @@ class ProfileActivity : AppCompatActivity() {
 
         val pagLogin = Intent(this, LoginActivity::class.java)
 
-        val sharedPreferences = getSharedPreferences("user", MODE_PRIVATE)
-        user.name = sharedPreferences.getString("name", null).toString()
+
+        user.name = prefs.name.toString()
         val nomeTextBox = binding.nome
-        user.email = sharedPreferences.getString("email", null).toString()
+        user.email = prefs.email.toString()
         val emailTextBox = binding.email
-        user.password = sharedPreferences.getString("senha", null).toString()
+        user.password = prefs.password.toString()
         val senhaTextBox = binding.senha
 
         showDataUser(nomeTextBox, emailTextBox, senhaTextBox)
-        deslogar(sharedPreferences, pagLogin)
+        deslogar(pagLogin)
 
     }
 
     private fun deslogar(
-        sharedPreferences: SharedPreferences,
         pagLogin: Intent
     ) {
         val buttonLogOff = binding.deslogar
         buttonLogOff.setOnClickListener {
-            val editor: SharedPreferences.Editor = sharedPreferences.edit()
-
-            editor.clear().apply()
-            editor.putBoolean("logou", false).apply()
+            prefs.clear()
+            prefs.isLogged = false
             startActivity(pagLogin)
             finishAffinity()
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun showDataUser(
         nomeTextBox: TextView,
         emailTextBox: TextView,
