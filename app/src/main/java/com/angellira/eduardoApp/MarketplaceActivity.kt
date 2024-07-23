@@ -31,7 +31,7 @@ class MarketplaceActivity : AppCompatActivity() {
         }
 
 
-        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = ProductAdapter(produtoLists)
         recyclerView.adapter = adapter
