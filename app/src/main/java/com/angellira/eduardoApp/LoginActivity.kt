@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.Menu
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -28,11 +29,8 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding()
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        setupView()
+        setSupportActionBar(binding.myToolbar)
         val pagMain = Intent(this, MainActivity::class.java)
 
         val sharedPref = sharedPreferences(pagMain)
@@ -51,6 +49,14 @@ class LoginActivity : AppCompatActivity() {
         cadastrar()
 
         esquecerSenha()
+    }
+
+    private fun setupView() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
     }
 
     private fun sharedPreferences(pagMain: Intent): Preferences {
@@ -107,6 +113,11 @@ class LoginActivity : AppCompatActivity() {
                 caixaSenha.text.clear()
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.no_icon, menu)
+        return true
     }
 
 }

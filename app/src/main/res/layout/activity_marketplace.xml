@@ -7,17 +7,20 @@
     android:layout_height="match_parent"
     tools:context=".MarketplaceActivity">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         android:background="#1565C7"
-        android:text="FaceBlog"
-        android:textColor="#ffffff"
-        android:textSize="70sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="4dp"
+        android:textColor="#000000"
+        android:textColorLink="#000000"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        />
 
     <TextView
         android:id="@+id/title2"
@@ -29,8 +32,8 @@
         android:textColor="#ffffff"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        app:layout_constraintStart_toStartOf="@+id/my_toolbar"
+        app:layout_constraintTop_toBottomOf="@id/my_toolbar" />
 
 
     <androidx.recyclerview.widget.RecyclerView

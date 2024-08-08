@@ -8,91 +8,24 @@
     android:background="@color/material_dynamic_neutral_variant90"
     tools:context=".MainActivity">
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/text3"-->
-    <!--        android:layout_width="273dp"-->
-    <!--        android:layout_height="145dp"-->
-    <!--        android:background="#ffffff"-->
-    <!--        android:text="Experimentei uma nova receita hoje e ficou incrível! Fiz um risoto de camarão com limão siciliano que ficou de lamber os dedos. Se alguém quiser a receita, só pedir nos comentários!  #Gastronomia #CozinhandoEmCasa #Receitas #Delícia #Risoto"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/text2" />-->
 
-    <!--    <ImageView-->
-    <!--        android:id="@+id/profile4"-->
-    <!--        android:layout_width="50dp"-->
-    <!--        android:layout_height="50dp"-->
-    <!--        android:layout_marginStart="10dp"-->
-    <!--        android:layout_marginEnd="9dp"-->
-    <!--        android:background="#e1e5e8"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toStartOf="@+id/text3"-->
-    <!--        app:layout_constraintHorizontal_bias="0.0"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="@+id/text3"-->
-    <!--        app:layout_constraintVertical_bias="0.0"-->
-    <!--        app:srcCompat="@drawable/avatar4"/>-->
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/text2"-->
-    <!--        android:layout_width="273dp"-->
-    <!--        android:layout_height="145dp"-->
-    <!--        android:background="#ffffff"-->
-    <!--        android:text="Hoje foi dia de cuidar do jardim! Plantei algumas flores novas e estou animada para ver como vão ficar na primavera. Nada como colocar as mãos na terra e sentir a energia da natureza. Alguém mais aqui adora jardinagem?  #Jardinagem #Flores #Primavera #Natureza #Hobby"-->
-    <!--        app:layout_constraintBottom_toTopOf="@id/text3"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/text1" />-->
-    <!--    <ImageView-->
-    <!--        android:id="@+id/profile2"-->
-    <!--        android:layout_width="50dp"-->
-    <!--        android:layout_height="50dp"-->
-    <!--        android:layout_marginStart="10dp"-->
-    <!--        android:background="#e1e5e8"-->
-    <!--        app:layout_constraintBottom_toTopOf="@+id/profile3"-->
-    <!--        app:layout_constraintEnd_toStartOf="@+id/text1"-->
-    <!--        app:layout_constraintHorizontal_bias="0.0"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="@id/text1"-->
-    <!--        app:layout_constraintVertical_bias="0.0"-->
-    <!--        app:srcCompat="@drawable/avatar2" />-->
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/text1"-->
-    <!--        android:layout_width="273dp"-->
-    <!--        android:layout_height="145dp"-->
-    <!--        android:layout_marginTop="13dp"-->
-    <!--        android:background="#ffffff"-->
-    <!--        app:layout_constraintBottom_toTopOf="@id/text2"-->
-        <!--        android:text="Acabei de explorar uma nova trilha de montanha e a vista era simplesmente deslumbrante! 🌄✨ A natureza nunca deixa de me surpreender. Aproveitei para tirar algumas fotos incríveis. Quem quiser dicas de trilhas pela região, só mandar mensagem!  #Natureza #Aventura #Trilhas #Exploração #VidaAoArLivre"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/options" />-->
-
-    <TextView
-        android:id="@+id/title"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="80dp"
         android:background="#1565C7"
-        android:text="FaceBlog"
-        android:textColor="#ffffff"
-        android:textColorLink="#ffffff"
-        android:textSize="70sp"
+        android:elevation="4dp"
+        android:textColor="#000000"
+        android:textColorLink="#000000"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        />
 
-    <ImageView
-        android:id="@+id/profile1"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:background="#1565C7"
-        app:layout_constraintBottom_toBottomOf="@id/title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/title"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/avatar1" />
+
+
 
     <ImageView
         android:id="@+id/bell"
@@ -106,6 +39,7 @@
 
     <ImageView
         android:id="@+id/options"
+        android:layout_marginTop="20dp"
         android:layout_width="120dp"
         android:layout_height="60dp"
         app:layout_constraintEnd_toStartOf="@id/message"
@@ -126,12 +60,13 @@
 
     <TextView
         android:id="@+id/bemVindo"
+        android:layout_marginTop="20dp"
         android:layout_width="350dp"
         android:layout_height="30dp"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/options"
         app:layout_constraintStart_toStartOf="@+id/options"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPosts"

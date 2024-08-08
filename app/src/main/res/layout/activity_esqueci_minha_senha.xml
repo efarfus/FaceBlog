@@ -9,18 +9,20 @@
     tools:context=".EsqueciMinhaSenhaActivity">
 
 
-    <TextView
-        android:id="@+id/title"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="80dp"
         android:background="#1565C7"
-        android:text="FaceBlog"
-        android:textColor="#ffffff"
-        android:textColorLink="#ffffff"
-        android:textSize="70sp"
+        android:elevation="4dp"
+        android:textColor="#000000"
+        android:textColorLink="#000000"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        />
 
 
     <EditText
@@ -35,7 +37,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
     <TextView
         android:id="@+id/textEmail"
@@ -44,7 +46,7 @@
         android:text="Email"
         app:layout_constraintBottom_toTopOf="@+id/boxEmail"
         app:layout_constraintStart_toStartOf="@+id/boxEmail"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintVertical_bias="1.0" />
 
 
@@ -68,7 +70,7 @@
         app:layout_constraintBottom_toTopOf="@+id/boxEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
     <Button
         android:id="@+id/enviar"
