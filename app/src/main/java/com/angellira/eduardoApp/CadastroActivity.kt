@@ -63,9 +63,9 @@ class CadastroActivity : AppCompatActivity() {
                 prefs.name = user.name
                 prefs.email = user.email
                 prefs.password = user.password
-                lifecycleScope.launch {
-                    apiService.saveUser(user)
-                }
+//                lifecycleScope.launch {
+//                    apiService.saveUser(user)
+//                }
                 startActivity(intent)
                 finishAffinity()
             } else {

@@ -11,8 +11,8 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#1565C7"
+        android:layout_height="wrap_content"
+        android:background="#8935b2"
         android:elevation="4dp"
         android:textColor="#000000"
         android:textColorLink="#000000"
@@ -50,11 +50,23 @@
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintVertical_bias="0.1" />
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="329dp"
+        android:layout_height="546dp"
+        android:alpha="0.1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/roxo" />
+
     <Button
         android:id="@+id/voltar"
         android:layout_width="wrap_content"
         android:layout_height="60dp"
-        android:backgroundTint="#1565C6"
+        android:backgroundTint="#8935b2"
         android:text="Voltar para página de login"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/rodape"

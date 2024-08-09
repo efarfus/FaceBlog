@@ -12,8 +12,8 @@
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#1565C7"
+        android:layout_height="wrap_content"
+        android:background="#8935b2"
         android:elevation="4dp"
         android:textColor="#000000"
         android:textColorLink="#000000"
@@ -21,8 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        />
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
 
 
@@ -39,12 +38,12 @@
 
     <ImageView
         android:id="@+id/options"
-        android:layout_marginTop="20dp"
         android:layout_width="120dp"
         android:layout_height="60dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toStartOf="@id/message"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bemVindo"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:srcCompat="@drawable/display_104620" />
 
     <ImageView
@@ -58,16 +57,6 @@
         app:srcCompat="@drawable/writing_294026" />
 
 
-    <TextView
-        android:id="@+id/bemVindo"
-        android:layout_marginTop="20dp"
-        android:layout_width="350dp"
-        android:layout_height="30dp"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/options"
-        app:layout_constraintStart_toStartOf="@+id/options"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewPosts"
         android:layout_width="409dp"
@@ -75,9 +64,49 @@
         android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/message"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/caixaPost"
+/>
+
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="329dp"
+        android:layout_height="546dp"
+        android:alpha="0.1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.497"
+        app:srcCompat="@drawable/roxo" />
+    <EditText
+        android:id="@+id/caixaPost"
+        android:layout_width="310dp"
+        android:layout_height="49dp"
+        android:layout_margin="30dp"
+        android:layout_marginTop="28dp"
+        android:textColor="@color/black"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/border"
+        android:hint="No que você está pensando, ${user.name}?"
+        android:maxLines="4"
+        android:padding="15dp"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.117"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/options" />
+
+    <ImageView
+        android:id="@+id/enviarPost"
+        android:layout_width="43dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="12dp"
+        android:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="@+id/caixaPost"
+        app:layout_constraintStart_toEndOf="@+id/caixaPost"
+        app:layout_constraintTop_toTopOf="@+id/caixaPost"
+        app:srcCompat="@drawable/baseline_send_24" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

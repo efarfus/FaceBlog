@@ -5,47 +5,66 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.angellira.eduardoApp.databinding.ActivityMainBinding
-import com.angellira.eduardoApp.adapter.Post
 import com.angellira.eduardoApp.adapter.PostAdapter
+import com.angellira.eduardoApp.databinding.ActivityMainBinding
+import com.angellira.eduardoApp.model.Posts
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
+import kotlinx.coroutines.launch
+import java.util.UUID
 
 class MainActivity : AppCompatActivity() {
-    private val user = User()
+    private var user = User()
     private lateinit var binding: ActivityMainBinding
     private lateinit var recyclerView: RecyclerView
     private val prefs by lazy { Preferences(this) }
     private val postList = listOf(
-        Post("XXXJosué", "Experimentei uma nova receita hoje e ficou incrível! Fiz um risoto de camarão com limão siciliano que ficou de lamber os dedos. Se alguém quiser a receita, só pedir nos comentários!  #Gastronomia #CozinhandoEmCasa #Receitas #Delícia #Risoto", R.drawable.avatar1),
-        Post("Eduardo Farfus", "Acabei de explorar uma nova trilha de montanha e a vista era simplesmente deslumbrante! \uD83C\uDF04✨ A natureza nunca deixa de me surpreender. Aproveitei para tirar algumas fotos incríveis. Quem quiser dicas de trilhas pela região, só mandar mensagem!  #Natureza #Aventura #Trilhas #Exploração #VidaAoArLivre", R.drawable.avatar2),
-        Post("Bruno Da Costa Silva", "Hoje foi dia de cuidar do jardim! Plantei algumas flores novas e estou animada para ver como vão ficar na primavera. Nada como colocar as mãos na terra e sentir a energia da natureza. Alguém mais aqui adora jardinagem?  #Jardinagem #Flores #Primavera #Natureza #Hobby", R.drawable.avatar3),
-        Post("Cecilia de Moraes", "Hoje foi dia de cuidar do jardim! Plantei algumas flores novas e estou animada para ver como vão ficar na primavera. Nada como colocar as mãos na terra e sentir a energia da natureza. Alguém mais aqui adora jardinagem?  #Jardinagem #Flores #Primavera #Natureza #Hobby", R.drawable.avatar1),
-        Post("Dionisio HalfBlood", "Hoje foi dia de cuidar do jardim! Plantei algumas flores novas e estou animada para ver como vão ficar na primavera. Nada como colocar as mãos na terra e sentir a energia da natureza. Alguém mais aqui adora jardinagem?  #Jardinagem #Flores #Primavera #Natureza #Hobby", R.drawable.avatar4)
+        Posts("1", "Ponte Preta","Experimentei uma nova receita hoje e ficou incrível! Fiz um risoto de camarão com limão siciliano que ficou de lamber os dedos. Se alguém quiser a receita, só pedir nos comentários!  #Gastronomia #CozinhandoEmCasa #Receitas #Delícia #Risoto", "https://firebasestorage.googleapis.com/v0/b/pets-f26d1.appspot.com/o/pastor-alemao-filhote.png?alt=media&token=ed8ab0d9-3d4d-466a-b937-e14f7d481886"),
+        Posts("2","XXXJosué", "Experimentei uma nova receita hoje e ficou incrível! Fiz um risoto de camarão com limão siciliano que ficou de lamber os dedos. Se alguém quiser a receita, só pedir nos comentários!  #Gastronomia #CozinhandoEmCasa #Receitas #Delícia #Risoto", "https://recreio.com.br/media/uploads/animacoes/luffy_one_piece_capa.jpg"),
+        Posts("3","Eduardo Farfus", "Acabei de explorar uma nova trilha de montanha e a vista era simplesmente deslumbrante! \uD83C\uDF04✨ A natureza nunca deixa de me surpreender. Aproveitei para tirar algumas fotos incríveis. Quem quiser dicas de trilhas pela região, só mandar mensagem!  #Natureza #Aventura #Trilhas #Exploração #VidaAoArLivre", "https://img.freepik.com/psd-gratuitas/ilustracao-3d-de-avatar-ou-perfil-humano_23-2150671122.jpg"),
+        Posts("4","Bruno Da Costa Silva", "Hoje foi dia de cuidar do jardim! Plantei algumas flores novas e estou animada para ver como vão ficar na primavera. Nada como colocar as mãos na terra e sentir a energia da natureza. Alguém mais aqui adora jardinagem?  #Jardinagem #Flores #Primavera #Natureza #Hobby", "https://upload.wikimedia.org/wikipedia/pt/9/96/Capa-AM_%28oficial%29.jpeg"),
+        Posts("5","Cecilia de Moraes", "Hoje foi dia de cuidar do jardim! Plantei algumas flores novas e estou animada para ver como vão ficar na primavera. Nada como colocar as mãos na terra e sentir a energia da natureza. Alguém mais aqui adora jardinagem?  #Jardinagem #Flores #Primavera #Natureza #Hobby", "https://wallpapers.com/images/hd/vinland-saga-minimalist-thorfinn-illustration-h1zhyk3bicbd2q1v.jpg"),
+        Posts("6","Dionisio HalfBlood", "Hoje foi dia de cuidar do jardim! Plantei algumas flores novas e estou animada para ver como vão ficar na primavera. Nada como colocar as mãos na terra e sentir a energia da natureza. Alguém mais aqui adora jardinagem?  #Jardinagem #Flores #Primavera #Natureza #Hobby", "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Malphite_1.jpg")
+
     )
+    private val apiService = ApiServiceFaceBlog.retrofitService
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupView()
         setSupportActionBar(binding.myToolbar)
+        hint()
+        marketplace(Intent(this, MarketplaceActivity::class.java))
+        recyclerView()
+        postar()
+    }
 
-        user.name = prefs.name.toString()
-        val bemVindoBox = binding.bemVindo
+    private fun postar() {
+        binding.enviarPost.setOnClickListener {
+            lifecycleScope.launch {
+                setUser()
+                val randomId = UUID.randomUUID().toString()
+                val post = Posts(randomId, "user", binding.caixaPost.text.toString(), "")
+                apiService.savePost(post)
+            }
+        }
+    }
 
-        val marketplaceActivity = Intent(this, MarketplaceActivity::class.java)
+    private suspend fun setUser() {
+        user = apiService.getUser("1")
+    }
 
-        mensagem(bemVindoBox)
-        marketplace(marketplaceActivity)
-
+    private fun recyclerView() {
         recyclerView = binding.recyclerViewPosts
         recyclerView.layoutManager = LinearLayoutManager(this)
         val adapter = PostAdapter(postList)
@@ -63,8 +82,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun mensagem(bemVindoBox: TextView) {
-        bemVindoBox.setText("Bem vindo, ${user.name}!")
+    private fun hint() {
+        user.name = prefs.name.toString()
+        binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
     }
 
 

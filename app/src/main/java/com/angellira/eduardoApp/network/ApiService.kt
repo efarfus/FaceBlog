@@ -1,5 +1,7 @@
 package com.angellira.eduardoApp.network
 
+import com.angellira.eduardoApp.model.MarketItem
+import com.angellira.eduardoApp.model.Posts
 import com.angellira.eduardoApp.model.User
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -28,8 +30,18 @@ interface ApiService {
     @GET("users/{id}.json")
     suspend fun getUser(@Path("id") id: String): User
 
+    @GET("posts/{id}.json")
+    suspend fun getPostId(@Path("id") id: String): Posts
+
     @POST("users.json")
     suspend fun saveUser(@Body user: User)
+
+    @POST("posts.json")
+    suspend fun savePost(@Body post: Posts)
+
+    @POST("marketItem.json")
+    suspend fun saveMarketItem(@Body item: MarketItem)
+
 
     @PUT("users/{id}.json")
     suspend fun putUser(@Path("id") id: String, @Body user: User)

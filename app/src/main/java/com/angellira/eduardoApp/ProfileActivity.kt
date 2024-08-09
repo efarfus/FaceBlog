@@ -27,7 +27,7 @@ class ProfileActivity : AppCompatActivity() {
         setSupportActionBar(binding.myToolbar)
 
 
-        val pagLogin = Intent(this, LoginActivity::class.java)
+        val pagLogin = Intent(this, SplashActivity::class.java)
 
 
         user.name = prefs.name.toString()

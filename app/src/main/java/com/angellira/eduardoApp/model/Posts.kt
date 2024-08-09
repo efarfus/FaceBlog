@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Posts(
-    val id: Int,
-    val user: User,
+    val id: String,
+    val user: String,
     val message: String,
     val img: String
 )

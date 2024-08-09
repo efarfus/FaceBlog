@@ -6,16 +6,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.angellira.eduardoApp.R
+import com.angellira.eduardoApp.model.Posts
 
-data class Post(
-    val name: String = "",
-    val text: String = "",
-    val image: Int = 0
-)
 
 class PostAdapter(
-    private val postList: List<Post>
+    private val postList: List<Posts>
 ) : RecyclerView.Adapter<PostAdapter.ProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
@@ -29,9 +26,9 @@ class PostAdapter(
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val post = postList[position]
-        holder.postName.text = post.name
-        holder.postText.text = post.text
-        holder.postImage.setImageResource(post.image)
+        holder.postName.text = post.user
+        holder.postText.text = post.message
+        holder.postImage.load(post.img)
     }
 
     override fun getItemCount() = postList.size

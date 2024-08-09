@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.Button
 import android.widget.EditText
@@ -31,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
         binding()
         setupView()
         setSupportActionBar(binding.myToolbar)
-        val pagMain = Intent(this, MainActivity::class.java)
+        val pagMain = Intent(this, SplashActivity::class.java)
 
         val sharedPref = sharedPreferences(pagMain)
 
@@ -75,9 +76,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun dataIntent() {
         user.email = prefs.email.toString()
-
         user.password = prefs.password.toString()
-
         user.name = prefs.name.toString()
     }
 

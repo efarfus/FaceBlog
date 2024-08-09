@@ -5,11 +5,19 @@
 
     <item
         android:id="@+id/action_profile"
-        android:iconTint="@color/black"
+        android:iconTint="@color/white"
         android:icon="@drawable/baseline_person_24"
         android:title="Profile"
         app:showAsAction="ifRoom"
-
         tools:ignore="ExtraText" />
+
+    <item
+        android:id="@+id/logo"
+        android:icon="@drawable/branco"
+        android:title="logo"
+        app:showAsAction="ifRoom"
+        />
+
+
 
 </menu>
