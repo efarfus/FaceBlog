@@ -1,5 +1,6 @@
 package com.angellira.eduardoApp.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,14 @@ import com.angellira.eduardoApp.model.Posts
 
 
 class PostAdapter(
-    private val postList: List<Posts>
+    private var postList: List<Posts>
 ) : RecyclerView.Adapter<PostAdapter.ProductViewHolder>() {
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updatePosts(newPosts: Map<String, Posts>) {
+        postList = newPosts.values.toList()
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(

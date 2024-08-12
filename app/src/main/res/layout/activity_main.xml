@@ -98,7 +98,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/options" />
 
-    <ImageView
+    <Button
         android:id="@+id/enviarPost"
         android:layout_width="43dp"
         android:layout_height="49dp"
@@ -107,6 +107,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/caixaPost"
         app:layout_constraintStart_toEndOf="@+id/caixaPost"
         app:layout_constraintTop_toTopOf="@+id/caixaPost"
-        app:srcCompat="@drawable/baseline_send_24" />
+        android:background="@drawable/baseline_send_24"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

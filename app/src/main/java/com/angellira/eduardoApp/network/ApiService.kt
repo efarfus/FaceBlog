@@ -16,7 +16,7 @@ import retrofit2.http.PUT
 import retrofit2.http.Path
 
 private const val BASE_URL =
-    "https://projeto-paris-default-rtdb.firebaseio.com/angel123456/eduardof123456/"
+    "https://faceblog-2f28f-default-rtdb.firebaseio.com/"
 
 private val retrofit = Retrofit.Builder()
     .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
@@ -24,16 +24,19 @@ private val retrofit = Retrofit.Builder()
     .build()
 
 interface ApiService {
-    @GET("users.json")
+    @GET("user.json")
     suspend fun getUsers(): Map<String, User>
 
-    @GET("users/{id}.json")
+    @GET("user/{id}.json")
     suspend fun getUser(@Path("id") id: String): User
 
     @GET("posts/{id}.json")
     suspend fun getPostId(@Path("id") id: String): Posts
 
-    @POST("users.json")
+    @GET("posts.json")
+    suspend fun getPosts(): Map<String, Posts>
+
+    @POST("user.json")
     suspend fun saveUser(@Body user: User)
 
     @POST("posts.json")
@@ -42,11 +45,10 @@ interface ApiService {
     @POST("marketItem.json")
     suspend fun saveMarketItem(@Body item: MarketItem)
 
-
-    @PUT("users/{id}.json")
+    @PUT("user/{id}.json")
     suspend fun putUser(@Path("id") id: String, @Body user: User)
 
-    @DELETE("users/{id}.json")
+    @DELETE("user/{id}.json")
     suspend fun deleteUser(@Path("id") id: String): Response<Void>
 }
 

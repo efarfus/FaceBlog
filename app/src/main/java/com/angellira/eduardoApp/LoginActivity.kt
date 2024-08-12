@@ -14,16 +14,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import com.angellira.eduardoApp.databinding.ActivityLoginBinding
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val user = User()
     private val prefs by lazy { Preferences(this) }
-
+    private val apiService = ApiServiceFaceBlog.retrofitService
+    private var users: MutableList<User> = mutableListOf()
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,21 +106,46 @@ class LoginActivity : AppCompatActivity() {
             val emailTentado = caixaEmail.text.toString()
             val senhaTentada = caixaSenha.text.toString()
 
-            if (user.authenticate(emailTentado, senhaTentada)) {
-                prefs.isLogged = true
-                startActivity(pagMain)
-                caixaEmail.text.clear()
-                caixaSenha.text.clear()
-            } else {
-                Toast.makeText(this, "Email ou senha incorretos", Toast.LENGTH_LONG).show()
-                caixaSenha.text.clear()
+
+            lifecycleScope.launch {
+                if (checkCredentials(emailTentado, senhaTentada)) {
+                    saveId(emailTentado, senhaTentada)
+                    prefs.isLogged = true
+                    startActivity(pagMain)
+                    clear(caixaEmail, caixaSenha)
+                } else {
+                    Toast.makeText(this@LoginActivity, "Email ou senha incorretos", Toast.LENGTH_LONG).show()
+                    clear(caixaSenha, caixaEmail)
+                }
             }
         }
+    }
+
+    private fun clear(caixaEmail: EditText, caixaSenha: EditText) {
+        caixaEmail.text.clear()
+        caixaSenha.text.clear()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.no_icon, menu)
         return true
+    }
+
+    private suspend fun checkCredentials(email: String, password: String): Boolean {
+        return if (email.isNotEmpty() && password.isNotEmpty()) {
+            users = apiService.getUsers().values.toMutableList()
+            users.any { it.email == email && it.password == password }
+        } else {
+            false
+        }
+    }
+
+    private suspend fun saveId(email: String, password: String) {
+        val user = apiService.getUsers().values.find { it.email == email && it.password == password }
+        if (user != null) {
+            val idOfThisUser = apiService.getUsers().entries.find { it.value.email == user.email }?.key
+            prefs.id = idOfThisUser.toString()
+        }
     }
 
 }

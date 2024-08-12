@@ -94,7 +94,7 @@
         app:srcCompat="@drawable/baseline_logout_24" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/pictureProfile"
         android:layout_width="188dp"
         android:layout_height="235dp"
         app:layout_constraintEnd_toEndOf="parent"

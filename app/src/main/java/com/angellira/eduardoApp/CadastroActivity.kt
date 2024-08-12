@@ -1,8 +1,6 @@
 package com.angellira.eduardoApp
 
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
@@ -13,10 +11,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.angellira.eduardoApp.databinding.ActivityCadastroBinding
 import com.angellira.eduardoApp.model.User
-import com.angellira.eduardoApp.network.ApiService
 import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 class CadastroActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCadastroBinding
@@ -57,19 +55,21 @@ class CadastroActivity : AppCompatActivity() {
             user.name = binding.boxNome.text.toString()
             user.email = binding.boxEmail.text.toString()
             user.password = binding.boxSenha.text.toString()
-            user.passwordConfirmation = binding.boxConfirmarSenha.text.toString()
+            user.id = UUID.randomUUID().toString()
+            user.img = binding.boxImageSrc.text.toString()
+            val passwordConfirmation = binding.boxConfirmarSenha.text.toString()
 
-            if (user.password == user.passwordConfirmation && user.email.isNotEmpty() && user.name.isNotEmpty() && user.password.isNotEmpty() && user.passwordConfirmation.isNotEmpty()) {
-                prefs.name = user.name
-                prefs.email = user.email
-                prefs.password = user.password
-//                lifecycleScope.launch {
-//                    apiService.saveUser(user)
-//                }
+            if (user.password == passwordConfirmation && user.email.isNotEmpty() && user.name.isNotEmpty() && user.password.isNotEmpty() && passwordConfirmation.isNotEmpty()) {
+
+                prefs.id = user.id
+                lifecycleScope.launch {
+                    apiService.saveUser(user)
+                }
                 startActivity(intent)
                 finishAffinity()
             } else {
-                Toast.makeText(this, "Dados estão incorretos, tente novamente", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Dados estão incorretos, tente novamente", Toast.LENGTH_LONG)
+                    .show()
                 binding.boxSenha.text.clear()
                 binding.boxConfirmarSenha.text.clear()
             }
