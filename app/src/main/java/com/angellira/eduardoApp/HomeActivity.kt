@@ -46,10 +46,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupView()
         setSupportActionBar(binding.myToolbar)
+        val produtoLists = listOf(
+            MarketItem(1, "Bruno Henrique","R.drawable.chevette", "R$17.000,00", "Chevette", "Chevette a venda" ),
+        )
 
 
 
         lifecycleScope.launch(IO) {
+
             db = Room.databaseBuilder(
                 applicationContext,
                 AppDatabase::class.java, "faceblog.db"
@@ -58,16 +62,13 @@ class MainActivity : AppCompatActivity() {
             marketItemDao = db.marketItemDao()
             userDao = db.userDao()
 
-            marketItemDao.getAll()
-//            postsDao.insertAll(postsList)
 
-//
             loadPosts()
-//            withContext(Main)
-//            {
-//                marketplace(Intent(this@MainActivity, MarketplaceActivity::class.java))
-//                postar()
-//            }
+            withContext(Main)
+            {
+                marketplace(Intent(this@MainActivity, MarketplaceActivity::class.java))
+                postar() //até aqui tudo ok. postar está quebrado
+            }
 
         }
 //        setUser()
@@ -83,8 +84,8 @@ class MainActivity : AppCompatActivity() {
             if (binding.caixaPost.text.toString().isNotEmpty()) {
                 lifecycleScope.launch(IO) {
                     val post =
-                        Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
-                    postsDao.insert(post)
+//                        Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
+//                    postsDao.insert(post)
                     Toast.makeText(
                         this@MainActivity,
                         "Post carregado com sucesso",
@@ -101,7 +102,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadPosts() {
-        lifecycleScope.launch {
+        lifecycleScope.launch(IO){
             val postsList = postsDao.getAll()
             withContext(Main){
                 recyclerView(postsList)
