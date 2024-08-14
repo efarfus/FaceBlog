@@ -11,11 +11,16 @@ import coil.load
 import com.angellira.eduardoApp.R
 import com.angellira.eduardoApp.model.Posts
 
+
 class PostAdapter(
-    private var postList: List<Posts>,
-    private val onItemClickListener: (String, String, String, String) -> Unit
+    private var postList: List<Posts>
 ) : RecyclerView.Adapter<PostAdapter.ProductViewHolder>() {
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun updatePosts(newPosts: Map<String, Posts>) {
+        postList = newPosts.values.toList()
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
@@ -28,10 +33,6 @@ class PostAdapter(
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val post = postList[position]
-
-        holder.postText.setOnClickListener {
-            onItemClickListener(post.img, post.user, post.id, post.message)
-        }
         holder.postName.text = post.user
         holder.postText.text = post.message
         holder.postImage.load(post.img)

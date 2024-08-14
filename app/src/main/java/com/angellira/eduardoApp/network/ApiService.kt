@@ -34,16 +34,13 @@ interface ApiService {
     suspend fun getPostId(@Path("id") id: String): Posts
 
     @GET("posts.json")
-    suspend fun getPosts(): Map<String, Map<String, Posts>>
+    suspend fun getPosts(): Map<String, Posts>
 
     @POST("user.json")
     suspend fun saveUser(@Body user: User)
 
     @POST("posts.json")
     suspend fun savePost(@Body post: Posts)
-
-    @POST("posts/{id}.json")
-    suspend fun savePostId(@Body post: Posts, @Path("id") id: String)
 
     @POST("marketItem.json")
     suspend fun saveMarketItem(@Body item: MarketItem)
