@@ -1,10 +1,12 @@
 package com.angellira.eduardoApp.model
 
-import kotlinx.serialization.Serializable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Serializable
+@Entity
 data class Posts(
-    val id: String,
+    @PrimaryKey (autoGenerate = true)
+    val id: Long = 0,
     val user: String,
     val message: String,
     val img: String

@@ -42,9 +42,6 @@ interface ApiService {
     @POST("posts.json")
     suspend fun savePost(@Body post: Posts)
 
-    @POST("posts/{id}.json")
-    suspend fun savePostId(@Body post: Posts, @Path("id") id: String)
-
     @POST("marketItem.json")
     suspend fun saveMarketItem(@Body item: MarketItem)
 

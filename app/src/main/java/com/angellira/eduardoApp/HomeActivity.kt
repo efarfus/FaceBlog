@@ -3,7 +3,6 @@ package com.angellira.eduardoApp
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -14,48 +13,83 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import com.angellira.eduardoApp.adapter.PostAdapter
+import com.angellira.eduardoApp.adapter.Produto
+import com.angellira.eduardoApp.database.AppDatabase
+import com.angellira.eduardoApp.database.dao.MarketItemDao
+import com.angellira.eduardoApp.database.dao.PostsDao
+import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityMainBinding
+import com.angellira.eduardoApp.model.MarketItem
 import com.angellira.eduardoApp.model.Posts
 import com.angellira.eduardoApp.model.User
-import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import java.util.UUID
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private var user = User()
     private lateinit var binding: ActivityMainBinding
     private lateinit var recyclerView: RecyclerView
     private val prefs by lazy { Preferences(this) }
-    private val apiService = ApiServiceFaceBlog.retrofitService
+    private lateinit var db: AppDatabase
+    private lateinit var postsDao: PostsDao
+    private lateinit var marketItemDao: MarketItemDao
+    private lateinit var userDao: UserDao
+
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupView()
         setSupportActionBar(binding.myToolbar)
-        lifecycleScope.launch {
-            setUser()
+
+
+
+        lifecycleScope.launch(IO) {
+            db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java, "faceblog.db"
+            ).build()
+            postsDao = db.postsDao()
+            marketItemDao = db.marketItemDao()
+            userDao = db.userDao()
+
+            marketItemDao.getAll()
+//            postsDao.insertAll(postsList)
+
+//
+            loadPosts()
+//            withContext(Main)
+//            {
+//                marketplace(Intent(this@MainActivity, MarketplaceActivity::class.java))
+//                postar()
+//            }
+
         }
-        loadPosts()
-        marketplace(Intent(this, MarketplaceActivity::class.java))
-        postar()
+//        setUser()
+
     }
 
     private fun postar() {
         binding.enviarPost.setOnClickListener {
             if (user.img.isEmpty()) {
-                user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
+                user.img =
+                    "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
             }
             if (binding.caixaPost.text.toString().isNotEmpty()) {
-                lifecycleScope.launch {
-                    user.id = UUID.randomUUID().toString()
-                    val post = Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
-                    apiService.savePostId(post, user.id)
-                    prefs.idPost = user.id
-                    binding.caixaPost.text.clear()
-                    Toast.makeText(this@MainActivity, "Post carregado com sucesso", Toast.LENGTH_LONG)
+                lifecycleScope.launch(IO) {
+                    val post =
+                        Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
+                    postsDao.insert(post)
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Post carregado com sucesso",
+                        Toast.LENGTH_LONG
+                    )
                         .show()
                     loadPosts()
                 }
@@ -68,20 +102,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadPosts() {
         lifecycleScope.launch {
-            val posts = apiService.getPosts()
-            val postsList = mutableListOf<Posts>()
-            posts.values.forEach { nestedMap ->
-                nestedMap.values.forEach { post ->
-                    postsList.add(post)
-                }
+            val postsList = postsDao.getAll()
+            withContext(Main){
+                recyclerView(postsList)
             }
-            recyclerView(postsList)
         }
     }
 
-    private suspend fun setUser() {
-        user = apiService.getUser(prefs.id.toString())
-        binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
+    private fun setUser() {
+        lifecycleScope.launch(IO) {
+            user.name = postsDao.get(prefs.id.toString())?.user.toString()
+            withContext(Main) {
+                binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
+            }
+
+        }
     }
 
     private fun recyclerView(listPosts: List<Posts>) {
@@ -111,6 +146,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, ProfileActivity::class.java))
             true
         }
+
         else -> super.onOptionsItemSelected(item)
     }
 

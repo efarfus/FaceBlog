@@ -19,7 +19,7 @@ class DetailedPostActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailedPostBinding
     private val apiService = ApiServiceFaceBlog.retrofitService
     private val prefs by lazy { Preferences(this) }
-    private var post = Posts("","","","")
+    private var post = Posts(1,"","","")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

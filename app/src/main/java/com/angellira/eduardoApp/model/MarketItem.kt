@@ -1,11 +1,13 @@
 package com.angellira.eduardoApp.model
 
-import kotlinx.serialization.Serializable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Serializable
+@Entity
 data class MarketItem(
-    val id: Int,
-    val user: User,
+    @PrimaryKey (autoGenerate = true)
+    val id: Long = 0,
+    val user: String,
     val img: String,
     val price: String,
     val title: String,

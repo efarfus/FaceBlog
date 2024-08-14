@@ -55,13 +55,11 @@ class CadastroActivity : AppCompatActivity() {
             user.name = binding.boxNome.text.toString()
             user.email = binding.boxEmail.text.toString()
             user.password = binding.boxSenha.text.toString()
-            user.id = UUID.randomUUID().toString()
             user.img = binding.boxImageSrc.text.toString()
             val passwordConfirmation = binding.boxConfirmarSenha.text.toString()
 
             if (user.password == passwordConfirmation && user.email.isNotEmpty() && user.name.isNotEmpty() && user.password.isNotEmpty() && passwordConfirmation.isNotEmpty()) {
 
-                prefs.id = user.id
                 lifecycleScope.launch {
                     apiService.saveUser(user)
                 }
