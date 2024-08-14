@@ -42,4 +42,9 @@ class Preferences(context: Context) {
         sharedPreferences.edit().clear().apply()
     }
 
+    var idPost: String?
+        get() = sharedPreferences.getString("idPost", null)
+        set(value) {
+            sharedPreferences.edit().putString("idPost", value).apply()
+        }
 }

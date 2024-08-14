@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
     private val prefs by lazy { Preferences(this) }
     private val apiService = ApiServiceFaceBlog.retrofitService
 
-
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,92 +38,90 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             setUser()
         }
+        loadPosts()
         marketplace(Intent(this, MarketplaceActivity::class.java))
-        recyclerView()
         postar()
     }
 
     private fun postar() {
         binding.enviarPost.setOnClickListener {
-            if (user.img.isEmpty())
-            {
+            if (user.img.isEmpty()) {
                 user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
             }
-            if (binding.caixaPost.text.toString().isNotEmpty())
-
-            lifecycleScope.launch {
-                val randomId = UUID.randomUUID().toString()
-                val post = Posts(randomId, user.name, binding.caixaPost.text.toString(), user.img)
-                apiService.savePost(post)
-                binding.caixaPost.text.clear()
-                Toast.makeText(this@MainActivity, "Post carregado com sucesso", Toast.LENGTH_LONG)
-                    .show()
-                recyclerView()
-            }
-            else
-            {
+            if (binding.caixaPost.text.toString().isNotEmpty()) {
+                lifecycleScope.launch {
+                    user.id = UUID.randomUUID().toString()
+                    val post = Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
+                    apiService.savePostId(post, user.id)
+                    prefs.idPost = user.id
+                    binding.caixaPost.text.clear()
+                    Toast.makeText(this@MainActivity, "Post carregado com sucesso", Toast.LENGTH_LONG)
+                        .show()
+                    loadPosts()
+                }
+            } else {
                 Toast.makeText(this@MainActivity, "Post vazio", Toast.LENGTH_LONG)
                     .show()
             }
         }
     }
 
-    private fun loadPosts(adapter: PostAdapter) {
+    private fun loadPosts() {
         lifecycleScope.launch {
-            val postList = apiService.getPosts()
-            Log.e("PostList", postList.toString())
-            adapter.updatePosts(postList)
+            val posts = apiService.getPosts()
+            val postsList = mutableListOf<Posts>()
+            posts.values.forEach { nestedMap ->
+                nestedMap.values.forEach { post ->
+                    postsList.add(post)
+                }
+            }
+            recyclerView(postsList)
         }
     }
 
-        private suspend fun setUser() {
-            user = apiService.getUser(prefs.id.toString())
-            Log.e("userRecebe", user.name)
-            binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
-        }
-
-        private fun recyclerView() {
-            recyclerView = binding.recyclerViewPosts
-            recyclerView.layoutManager = LinearLayoutManager(this)
-            val adapter = PostAdapter(emptyList())
-            recyclerView.adapter = adapter
-            loadPosts(adapter)
-        }
-
-        private fun setupView() {
-            enableEdgeToEdge()
-            binding = ActivityMainBinding.inflate(layoutInflater)
-            setContentView(binding.root)
-            ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-                insets
-            }
-        }
-
-        override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-
-
-            R.id.action_profile -> {
-                startActivity(Intent(this, ProfileActivity::class.java))
-
-                true
-            }
-
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
-
-        private fun marketplace(marketplaceActivity: Intent) {
-            binding.options.setOnClickListener {
-                startActivity(marketplaceActivity)
-            }
-        }
-
-        override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-            menuInflater.inflate(R.menu.itens, menu)
-            return true
-        }
-
+    private suspend fun setUser() {
+        user = apiService.getUser(prefs.id.toString())
+        binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
     }
+
+    private fun recyclerView(listPosts: List<Posts>) {
+        recyclerView = binding.recyclerViewPosts
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        val adapter = PostAdapter(listPosts) { imgSrc, name, id, desc ->
+            val intent = Intent(this@MainActivity, DetailedPostActivity::class.java)
+            startActivity(intent)
+        }
+        recyclerView.adapter = adapter
+    }
+
+    private fun setupView() {
+        enableEdgeToEdge()
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_profile -> {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun marketplace(marketplaceActivity: Intent) {
+        binding.options.setOnClickListener {
+            startActivity(marketplaceActivity)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.itens, menu)
+        return true
+    }
+}
