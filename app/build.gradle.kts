@@ -47,7 +47,6 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     // Kotlin Serialization
     implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
-
     // Retrofit
     implementation("com.google.android.material:material:1.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
@@ -72,4 +71,7 @@ dependencies {
 
     // To use Kotlin annotation processing tool (kapt)
     kapt("androidx.room:room-compiler:$room_version")
+
+    // Adicione esta linha para usar coroutines com Room
+    implementation("androidx.room:room-ktx:$room_version")
 }

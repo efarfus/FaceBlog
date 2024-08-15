@@ -9,23 +9,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import com.angellira.eduardoApp.database.AppDatabase
+import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityCadastroBinding
 import com.angellira.eduardoApp.model.User
-import com.angellira.eduardoApp.network.ApiServiceFaceBlog
-import com.angellira.eduardoApp.preferences.Preferences
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.UUID.randomUUID
 
 class CadastroActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCadastroBinding
-    private val prefs by lazy { Preferences(this) }
-    private val apiService = ApiServiceFaceBlog.retrofitService
     private val user = User()
+    private lateinit var db: AppDatabase
+    private lateinit var userDao: UserDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding()
+        database()
         setupView()
         setSupportActionBar(binding.myToolbar)
 
@@ -52,6 +55,8 @@ class CadastroActivity : AppCompatActivity() {
         intent: Intent
     ) {
         binding.cadastrar.setOnClickListener {
+            val teste = randomUUID().toString()
+            user.id = teste
             user.name = binding.boxNome.text.toString()
             user.email = binding.boxEmail.text.toString()
             user.password = binding.boxSenha.text.toString()
@@ -60,8 +65,8 @@ class CadastroActivity : AppCompatActivity() {
 
             if (user.password == passwordConfirmation && user.email.isNotEmpty() && user.name.isNotEmpty() && user.password.isNotEmpty() && passwordConfirmation.isNotEmpty()) {
 
-                lifecycleScope.launch {
-                    apiService.saveUser(user)
+                lifecycleScope.launch(IO) {
+                    userDao.insert(user)
                 }
                 startActivity(intent)
                 finishAffinity()
@@ -71,6 +76,17 @@ class CadastroActivity : AppCompatActivity() {
                 binding.boxSenha.text.clear()
                 binding.boxConfirmarSenha.text.clear()
             }
+        }
+    }
+
+    private fun database() {
+        lifecycleScope.launch(IO) {
+
+            db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java, "faceblog.db"
+            ).build()
+            userDao = db.userDao()
         }
     }
 

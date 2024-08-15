@@ -15,19 +15,30 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
+import com.angellira.eduardoApp.database.AppDatabase
+import com.angellira.eduardoApp.database.dao.MarketItemDao
+import com.angellira.eduardoApp.database.dao.PostsDao
+import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityLoginBinding
 import com.angellira.eduardoApp.model.User
 import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val user = User()
     private val prefs by lazy { Preferences(this) }
-    private val apiService = ApiServiceFaceBlog.retrofitService
     private var users: MutableList<User> = mutableListOf()
+    private lateinit var db: AppDatabase
+    private lateinit var postsDao: PostsDao
+    private lateinit var marketItemDao: MarketItemDao
+    private lateinit var userDao: UserDao
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,18 +53,33 @@ class LoginActivity : AppCompatActivity() {
 
         dataIntent()
 
+        database()
+
         val caixaEmail = binding.boxEmail
         val caixaSenha = binding.boxSenha
         val envioEmailSenha = binding.logar
 
         if (sharedPref != null)
-        run {
-            logar(envioEmailSenha, caixaEmail, caixaSenha, pagMain)
-        }
+            run {
+                logar(envioEmailSenha, caixaEmail, caixaSenha, pagMain)
+            }
 
         cadastrar()
 
         esquecerSenha()
+    }
+
+    private fun database() {
+        lifecycleScope.launch(IO) {
+
+            db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java, "faceblog.db"
+            ).build()
+            postsDao = db.postsDao()
+            marketItemDao = db.marketItemDao()
+            userDao = db.userDao()
+        }
     }
 
     private fun setupView() {
@@ -107,15 +133,23 @@ class LoginActivity : AppCompatActivity() {
             val senhaTentada = caixaSenha.text.toString()
 
 
-            lifecycleScope.launch {
+            lifecycleScope.launch(IO) {
                 if (checkCredentials(emailTentado, senhaTentada)) {
                     saveId(emailTentado, senhaTentada)
-                    prefs.isLogged = true
-                    startActivity(pagMain)
-                    clear(caixaEmail, caixaSenha)
+                    withContext(Main){
+                        prefs.isLogged = true
+                        startActivity(pagMain)
+                        clear(caixaEmail, caixaSenha)
+                    }
                 } else {
-                    Toast.makeText(this@LoginActivity, "Email ou senha incorretos", Toast.LENGTH_LONG).show()
-                    clear(caixaSenha, caixaEmail)
+                    withContext(Main){
+                        Toast.makeText(
+                            this@LoginActivity,
+                            "Email ou senha incorretos",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        clear(caixaSenha, caixaEmail)
+                    }
                 }
             }
         }
@@ -131,21 +165,21 @@ class LoginActivity : AppCompatActivity() {
         return true
     }
 
-    private suspend fun checkCredentials(email: String, password: String): Boolean {
+    private fun checkCredentials(email: String, password: String): Boolean {
         return if (email.isNotEmpty() && password.isNotEmpty()) {
-            users = apiService.getUsers().values.toMutableList()
-            users.any { it.email == email && it.password == password }
+            users = userDao.getAll().toMutableList()
+            return users.any { it.email == email && it.password == password }
         } else {
             false
         }
     }
 
     private suspend fun saveId(email: String, password: String) {
-        val user = apiService.getUsers().values.find { it.email == email && it.password == password }
-        if (user != null) {
-            val idOfThisUser = apiService.getUsers().entries.find { it.value.email == user.email }?.key
-            prefs.id = idOfThisUser.toString()
+        lifecycleScope.launch(IO) {
+            val userId = userDao.getUserByEmailAndPassword(email, password)?.id.toString()
+            prefs.id = userId.toString()
         }
     }
+
 
 }

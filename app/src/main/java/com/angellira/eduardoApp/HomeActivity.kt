@@ -1,10 +1,13 @@
 package com.angellira.eduardoApp
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -15,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.angellira.eduardoApp.adapter.PostAdapter
-import com.angellira.eduardoApp.adapter.Produto
 import com.angellira.eduardoApp.database.AppDatabase
 import com.angellira.eduardoApp.database.dao.MarketItemDao
 import com.angellira.eduardoApp.database.dao.PostsDao
@@ -29,6 +31,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID.randomUUID
 
 class MainActivity : AppCompatActivity() {
     private var user = User()
@@ -37,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     private val prefs by lazy { Preferences(this) }
     private lateinit var db: AppDatabase
     private lateinit var postsDao: PostsDao
-    private lateinit var marketItemDao: MarketItemDao
     private lateinit var userDao: UserDao
 
 
@@ -46,52 +48,50 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setupView()
         setSupportActionBar(binding.myToolbar)
-        val produtoLists = listOf(
-            MarketItem(1, "Bruno Henrique","R.drawable.chevette", "R$17.000,00", "Chevette", "Chevette a venda" ),
-        )
-
-
 
         lifecycleScope.launch(IO) {
 
-            db = Room.databaseBuilder(
-                applicationContext,
-                AppDatabase::class.java, "faceblog.db"
-            ).build()
-            postsDao = db.postsDao()
-            marketItemDao = db.marketItemDao()
-            userDao = db.userDao()
+            database()
 
-
+            setUser()
             loadPosts()
             withContext(Main)
             {
                 marketplace(Intent(this@MainActivity, MarketplaceActivity::class.java))
-                postar() //até aqui tudo ok. postar está quebrado
+                postar()
             }
 
         }
-//        setUser()
 
+    }
+
+    private fun database() {
+        db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "faceblog.db"
+        ).build()
+        postsDao = db.postsDao()
+        userDao = db.userDao()
     }
 
     private fun postar() {
         binding.enviarPost.setOnClickListener {
-            if (user.img.isEmpty()) {
-                user.img =
-                    "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
-            }
             if (binding.caixaPost.text.toString().isNotEmpty()) {
                 lifecycleScope.launch(IO) {
                     val post =
-//                        Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
-//                    postsDao.insert(post)
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Post carregado com sucesso",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
+                        Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
+                    postsDao.insert(post)
+                    withContext(Main) {
+                        binding.caixaPost.text.clear()
+                        hideKeyboard(this@MainActivity, currentFocus ?: View(this@MainActivity))
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Post carregado com sucesso",
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+
+                    }
                     loadPosts()
                 }
             } else {
@@ -102,17 +102,26 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadPosts() {
-        lifecycleScope.launch(IO){
+        lifecycleScope.launch(IO) {
             val postsList = postsDao.getAll()
-            withContext(Main){
+            withContext(Main) {
                 recyclerView(postsList)
             }
         }
     }
 
+    fun hideKeyboard(context: Context, view: View) {
+        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
     private fun setUser() {
         lifecycleScope.launch(IO) {
-            user.name = postsDao.get(prefs.id.toString())?.user.toString()
+            user.id = randomUUID().toString()
+            user.name = userDao.get(prefs.id.toString())?.name.toString()
+            if (user.img.isEmpty()) {
+                user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
+            }
             withContext(Main) {
                 binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
             }
@@ -125,6 +134,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         val adapter = PostAdapter(listPosts) { imgSrc, name, id, desc ->
+            prefs.idPost = id
             val intent = Intent(this@MainActivity, DetailedPostActivity::class.java)
             startActivity(intent)
         }
