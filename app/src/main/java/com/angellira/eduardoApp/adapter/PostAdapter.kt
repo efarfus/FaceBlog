@@ -29,8 +29,8 @@ class PostAdapter(
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val post = postList[position]
 
-        holder.postText.setOnClickListener {
-            onItemClickListener(post.img, post.user, post.id.toString(), post.message)
+        holder.itemView.setOnClickListener {
+            onItemClickListener(post.img, post.user, post.id, post.message)
         }
         holder.postName.text = post.user
         holder.postText.text = post.message

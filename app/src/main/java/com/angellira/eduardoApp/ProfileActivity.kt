@@ -96,11 +96,12 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun switchLayoutBack() {
-        binding.editTextEmailAddress.visibility = INVISIBLE
+        binding.editTextName.visibility = INVISIBLE
         binding.editTextEmailAddress.visibility = INVISIBLE
         binding.editTextPassword.visibility = INVISIBLE
         binding.cancelEditButton.visibility = INVISIBLE
         binding.confirmButton.visibility = INVISIBLE
+
         binding.nome.visibility = VISIBLE
         binding.email.visibility = VISIBLE
         binding.senha.visibility = VISIBLE
@@ -148,10 +149,13 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun setProfilePicture() {
-        try {
+
+        if(user.img != "")
+        {
             binding.pictureProfile.load(user.img)
         }
-        catch (e:Exception)
+
+        else
         {
             user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
             binding.pictureProfile.load(user.img)
@@ -195,9 +199,9 @@ class ProfileActivity : AppCompatActivity() {
         val nomeTextBox = binding.nome
         val emailTextBox = binding.email
         val senhaTextBox = binding.senha
-        nomeTextBox.setText("Nome: ${user.name}")
-        emailTextBox.setText("Email: ${user.email}")
-        senhaTextBox.setText("Senha: ${user.password}")
+        nomeTextBox.text = "Nome: ${user.name}"
+        emailTextBox.text = "Email: ${user.email}"
+        senhaTextBox.text = "Senha: ${user.password}"
     }
 
     private fun binding() {

@@ -21,6 +21,8 @@ interface PostsDao {
     @Insert
     fun insert(posts: Posts)
 
+
+
     @Delete
     fun delete(posts: Posts)
 }

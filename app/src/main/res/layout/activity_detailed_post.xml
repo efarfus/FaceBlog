@@ -8,16 +8,27 @@
     tools:context=".DetailedPostActivity"
     android:background="#DCE3E9">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#8935b2"
+        android:elevation="4dp"
+        android:textColor="#ffffff"
+        android:textColorLink="#ffffff"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <ImageView
         android:id="@+id/imageUser"
         android:layout_width="77dp"
         android:layout_height="63dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.444"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="@+id/textUser"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
@@ -27,6 +38,7 @@
         android:layout_marginStart="12dp"
         android:text="TextView"
         android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageUser"
         app:layout_constraintStart_toEndOf="@+id/imageUser"
         app:layout_constraintTop_toTopOf="@+id/imageUser" />
 
@@ -34,10 +46,11 @@
         android:id="@+id/textUser"
         android:layout_width="368dp"
         android:layout_height="153dp"
-        android:textSize="15sp"
-        android:layout_marginBottom="92dp"
-        android:text="TextView"
         android:layout_marginTop="15dp"
+        android:background="@drawable/border"
+        android:padding="15dp"
+        android:text="TextView"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageUser" />
@@ -67,6 +80,7 @@
     <Button
         android:id="@+id/saveButton"
         android:layout_width="40dp"
+        android:layout_marginTop="15dp"
         android:layout_height="40dp"
         android:background="@drawable/baseline_loyalty_24"
         android:text="TextView"
@@ -84,5 +98,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/saveButton"
  />
+
+    <Button
+        android:id="@+id/moreOptions"
+        android:visibility="gone"
+        android:layout_width="39dp"
+        android:layout_height="41dp"
+        android:background="@drawable/baseline_more_vert_24"
+        app:layout_constraintBottom_toTopOf="@+id/textUser"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/nameUser"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:elevation="5dp"
+        android:visibility="gone"
+        android:text="Deletar Post"
+        app:layout_constraintEnd_toEndOf="@+id/moreOptions"
+        app:layout_constraintTop_toBottomOf="@+id/moreOptions" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

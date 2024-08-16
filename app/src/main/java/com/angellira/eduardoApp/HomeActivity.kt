@@ -19,11 +19,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.angellira.eduardoApp.adapter.PostAdapter
 import com.angellira.eduardoApp.database.AppDatabase
-import com.angellira.eduardoApp.database.dao.MarketItemDao
 import com.angellira.eduardoApp.database.dao.PostsDao
 import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityMainBinding
-import com.angellira.eduardoApp.model.MarketItem
 import com.angellira.eduardoApp.model.Posts
 import com.angellira.eduardoApp.model.User
 import com.angellira.eduardoApp.preferences.Preferences
@@ -110,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun hideKeyboard(context: Context, view: View) {
+    private fun hideKeyboard(context: Context, view: View) {
         val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
@@ -133,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView = binding.recyclerViewPosts
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        val adapter = PostAdapter(listPosts) { imgSrc, name, id, desc ->
+        val adapter = PostAdapter(listPosts) { _, _, id, _ ->
             prefs.idPost = id
             val intent = Intent(this@MainActivity, DetailedPostActivity::class.java)
             startActivity(intent)

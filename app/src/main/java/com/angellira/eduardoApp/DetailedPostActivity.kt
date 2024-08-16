@@ -1,6 +1,11 @@
 package com.angellira.eduardoApp
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -11,11 +16,9 @@ import coil.load
 import com.angellira.eduardoApp.database.AppDatabase
 import com.angellira.eduardoApp.database.dao.PostsDao
 import com.angellira.eduardoApp.database.dao.UserDao
-import com.angellira.eduardoApp.databinding.ActivityCadastroBinding
 import com.angellira.eduardoApp.databinding.ActivityDetailedPostBinding
 import com.angellira.eduardoApp.model.Posts
-import com.angellira.eduardoApp.network.ApiService
-import com.angellira.eduardoApp.network.ApiServiceFaceBlog
+import com.angellira.eduardoApp.model.User
 import com.angellira.eduardoApp.preferences.Preferences
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -24,9 +27,9 @@ import kotlinx.coroutines.withContext
 
 class DetailedPostActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailedPostBinding
-    private val apiService = ApiServiceFaceBlog.retrofitService
     private val prefs by lazy { Preferences(this) }
-    private var post = Posts("1", "", "", "")
+    private var post = Posts()
+    private var user = User()
     private lateinit var db: AppDatabase
     private lateinit var postsDao: PostsDao
     private lateinit var userDao: UserDao
@@ -35,20 +38,59 @@ class DetailedPostActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding()
         setupView()
-
-
+        setSupportActionBar(binding.myToolbar)
         database()
-        loadPost()
+        lifecycleScope.launch(IO){
+            user = setUser()
+            post = loadPost()
+            moreOptions()
+        }
+        closeDelete()
+        deletePost()
     }
 
-    private fun loadPost() {
-        lifecycleScope.launch(IO) {
-            post = postsDao.get(prefs.idPost.toString())!!
-            withContext(Main) {
-                binding.nameUser.text = post.user
-                binding.textUser.text = post.message
-                binding.imageUser.load(post.img)
+    private fun closeDelete() {
+        binding.main.setOnClickListener {
+            binding.deleteButton.visibility = INVISIBLE
+        }
+    }
+
+    private suspend fun setUser(): User {
+        return withContext(IO) {
+            userDao.get(prefs.id.toString()) ?: User()
+        }
+    }
+
+    private fun deletePost() {
+        binding.deleteButton.setOnClickListener {
+            lifecycleScope.launch(IO) {
+                postsDao.delete(post)
+                withContext(Main) {
+                    binding.deleteButton.visibility = INVISIBLE
+                    startActivity(Intent(this@DetailedPostActivity, MainActivity::class.java))
+                }
             }
+        }
+    }
+
+    private fun moreOptions() {
+        if (post.user == user.name) {
+            binding.moreOptions.visibility = VISIBLE
+            binding.moreOptions.setOnClickListener {
+                binding.deleteButton.visibility = VISIBLE
+            }
+        }
+    }
+
+    private suspend fun loadPost(): Posts {
+        return withContext(IO) {
+            val loadedPost = postsDao.get(prefs.idPost.toString()) ?: Posts()
+            withContext(Main) {
+                binding.nameUser.text = loadedPost.user
+                binding.textUser.text = loadedPost.message
+                binding.imageUser.load(loadedPost.img)
+            }
+            loadedPost
         }
     }
 
@@ -73,4 +115,19 @@ class DetailedPostActivity : AppCompatActivity() {
         postsDao = db.postsDao()
         userDao = db.userDao()
     }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.action_profile -> {
+            startActivity(Intent(this, ProfileActivity::class.java))
+            true
+        }
+
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.itens, menu)
+        return true
+    }
 }
+

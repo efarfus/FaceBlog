@@ -1,11 +1,8 @@
 package com.angellira.eduardoApp
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.widget.Button
 import android.widget.EditText
@@ -22,7 +19,6 @@ import com.angellira.eduardoApp.database.dao.PostsDao
 import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityLoginBinding
 import com.angellira.eduardoApp.model.User
-import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -177,7 +173,7 @@ class LoginActivity : AppCompatActivity() {
     private suspend fun saveId(email: String, password: String) {
         lifecycleScope.launch(IO) {
             val userId = userDao.getUserByEmailAndPassword(email, password)?.id.toString()
-            prefs.id = userId.toString()
+            prefs.id = userId
         }
     }
 

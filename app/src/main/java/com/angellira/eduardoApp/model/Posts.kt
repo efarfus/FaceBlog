@@ -8,8 +8,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Posts(
     @PrimaryKey
-    val id: String,
-    val user: String,
-    val message: String,
-    val img: String
+    val id: String = "",
+    val user: String = "",
+    val message: String = "",
+    val img: String = ""
 )
