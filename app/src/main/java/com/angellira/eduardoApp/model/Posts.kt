@@ -11,5 +11,6 @@ data class Posts(
     val id: String = "",
     val user: String = "",
     val message: String = "",
-    val img: String = ""
+    val img: String = "",
+    var likes: Int = 0
 )

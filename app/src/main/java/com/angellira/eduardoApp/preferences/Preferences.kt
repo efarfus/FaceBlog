@@ -14,6 +14,12 @@ class Preferences(context: Context) {
             sharedPreferences.edit().putString("name", value).apply()
         }
 
+    var img: String?
+        get() = sharedPreferences.getString("img", null)
+        set(value) {
+            sharedPreferences.edit().putString("img", value).apply()
+        }
+
     var id: String?
         get() = sharedPreferences.getString("id", null)
         set(value) {

@@ -19,6 +19,7 @@ import com.angellira.eduardoApp.database.dao.PostsDao
 import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityProfileBinding
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.network.PexelsApi
 import com.angellira.eduardoApp.preferences.Preferences
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers.IO
@@ -30,6 +31,7 @@ import kotlinx.coroutines.withContext
 class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private var user = User()
+    private val pexelsApi = PexelsApi()
     private val prefs by lazy { Preferences(this) }
     private lateinit var db: AppDatabase
     private lateinit var postsDao: PostsDao
@@ -46,8 +48,30 @@ class ProfileActivity : AppCompatActivity() {
         deslogar()
         createDialogDelete()
         edit()
-        confirmEdit() //verificar o put atualizar pagina apos o put
+        createDialogEdit()
         cancelEdit()
+        createPhoto()
+    }
+
+    private fun createPhoto() {
+        binding.pictureProfile.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Deseja gerar uma foto aleatória para foto de perfil?")
+                .setMessage("Foto gerada atráves de API Pexels.")
+                .setPositiveButton("Sim") { _, _ ->
+                    lifecycleScope.launch(IO) {
+                        user.img = pexelsApi.getRandomPhotoUrl().toString()
+                        userDao.putImg(user.img, prefs.id.toString())
+                        withContext(Main) {
+                            setProfilePicture()
+                        }
+                    }
+                }
+                .setNegativeButton("Não") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
     }
 
     private fun cancelEdit() {
@@ -57,11 +81,11 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun confirmEdit() {
-        binding.confirmButton.setOnClickListener {
-            catchInfos()
-            putAll()
-            switchLayoutBack()
-        }
+
+        catchInfos()
+        putAll()
+        startActivity(Intent(this, LoginActivity::class.java))
+        prefs.clear()
     }
 
     private fun edit() {
@@ -72,9 +96,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun putAll() {
         lifecycleScope.launch(IO) {
-            userDao.putName(user.name, prefs.id.toString())
-            userDao.putEmail(user.email, prefs.id.toString())
-            userDao.putName(user.password, prefs.id.toString())
+            userDao.updateUser(prefs.id.toString(), user.name, user.email, user.password)
         }
     }
 
@@ -111,7 +133,7 @@ class ProfileActivity : AppCompatActivity() {
         val pagLogin = Intent(this, SplashActivity::class.java)
         lifecycleScope.launch(IO) {
             userDao.delete(user)
-            withContext(Main){
+            withContext(Main) {
                 prefs.clear()
                 prefs.isLogged = false
                 startActivity(pagLogin)
@@ -133,12 +155,27 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun createDialogEdit() {
+        binding.confirmButton.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Você tem certeza de que deseja editar sua conta?")
+                .setMessage("Após a edição os dados serão alterados na sua conta.")
+                .setPositiveButton("Sim") { _, _ ->
+                    confirmEdit()
+                }
+                .setNegativeButton("Não") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
+    }
+
     private fun createDialogDelete() {
         binding.delete.setOnClickListener {
             MaterialAlertDialogBuilder(this)
                 .setTitle("Você tem certeza de que deseja excluir sua conta?")
                 .setMessage("Após a exclusão não será possível a recuperação de nenhum dado salvo na sua conta.")
-                .setPositiveButton("Sim") { _,_  ->
+                .setPositiveButton("Sim") { _, _ ->
                     deleteUser()
                 }
                 .setNegativeButton("Não") { dialog, _ ->
@@ -148,18 +185,9 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+
     private fun setProfilePicture() {
-
-        if(user.img != "")
-        {
             binding.pictureProfile.load(user.img)
-        }
-
-        else
-        {
-            user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
-            binding.pictureProfile.load(user.img)
-        }
     }
 
     private fun setupView() {
@@ -171,10 +199,13 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private  fun setUser() {
-        lifecycleScope.launch(IO){
+    private fun setUser() {
+        lifecycleScope.launch(IO) {
             user = userDao.get(prefs.id.toString())!!
-            withContext(Main){
+            if (user.img == "") {
+                user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
+            }
+            withContext(Main) {
                 setProfilePicture()
                 showDataUser()
             }

@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.angellira.eduardoApp.model.Posts
 
 
@@ -21,7 +22,8 @@ interface PostsDao {
     @Insert
     fun insert(posts: Posts)
 
-
+    @Update
+    fun update(post: Posts)
 
     @Delete
     fun delete(posts: Posts)

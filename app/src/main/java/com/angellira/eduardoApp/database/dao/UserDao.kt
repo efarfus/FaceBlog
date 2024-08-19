@@ -11,6 +11,9 @@ interface UserDao {
     @Query("SELECT * FROM user")
     fun getAll(): List<User>
 
+    @Query("UPDATE user SET name = :name, email = :email, password = :password WHERE id = :userId")
+    fun updateUser(userId: String, name: String, email: String, password: String)
+
     @Query("SELECT * FROM user WHERE email = :email AND password = :password LIMIT 1")
     suspend fun getUserByEmailAndPassword(email: String, password: String): User?
 
@@ -22,6 +25,9 @@ interface UserDao {
 
     @Query("UPDATE User SET email = (:newEmail) WHERE id IN (:id)")
     fun putEmail(newEmail: String, id: String)
+
+    @Query("UPDATE User SET img = (:newImg) WHERE id IN (:id)")
+    fun putImg(newImg: String, id: String)
 
     @Query("UPDATE User SET password = (:newPassword) WHERE id IN (:id)")
     fun putPassword(newPassword: String, id: String)

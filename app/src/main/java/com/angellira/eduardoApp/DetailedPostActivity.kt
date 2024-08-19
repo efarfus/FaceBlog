@@ -20,6 +20,7 @@ import com.angellira.eduardoApp.databinding.ActivityDetailedPostBinding
 import com.angellira.eduardoApp.model.Posts
 import com.angellira.eduardoApp.model.User
 import com.angellira.eduardoApp.preferences.Preferences
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
@@ -40,13 +41,30 @@ class DetailedPostActivity : AppCompatActivity() {
         setupView()
         setSupportActionBar(binding.myToolbar)
         database()
-        lifecycleScope.launch(IO){
+        lifecycleScope.launch(IO) {
             user = setUser()
             post = loadPost()
             moreOptions()
         }
+
         closeDelete()
-        deletePost()
+        createDialogDelete()
+
+    }
+
+    private fun createDialogDelete() {
+        binding.deleteButton.setOnClickListener {
+            MaterialAlertDialogBuilder(this)
+                .setTitle("Você tem certeza de que deseja excluir esse post?")
+                .setMessage("Após a exclusão não será possível a recuperação de nenhum dado salvo.")
+                .setPositiveButton("Sim") { _, _ ->
+                    deletePost()
+                }
+                .setNegativeButton("Não") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
+        }
     }
 
     private fun closeDelete() {
@@ -62,13 +80,11 @@ class DetailedPostActivity : AppCompatActivity() {
     }
 
     private fun deletePost() {
-        binding.deleteButton.setOnClickListener {
-            lifecycleScope.launch(IO) {
-                postsDao.delete(post)
-                withContext(Main) {
-                    binding.deleteButton.visibility = INVISIBLE
-                    startActivity(Intent(this@DetailedPostActivity, MainActivity::class.java))
-                }
+        lifecycleScope.launch(IO) {
+            postsDao.delete(post)
+            withContext(Main) {
+                binding.deleteButton.visibility = INVISIBLE
+                startActivity(Intent(this@DetailedPostActivity, MainActivity::class.java))
             }
         }
     }
@@ -115,6 +131,7 @@ class DetailedPostActivity : AppCompatActivity() {
         postsDao = db.postsDao()
         userDao = db.userDao()
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_profile -> {

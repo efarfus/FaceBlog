@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun postar() {
         binding.enviarPost.setOnClickListener {
+            setUser()
             if (binding.caixaPost.text.toString().isNotEmpty()) {
                 lifecycleScope.launch(IO) {
                     val post =
@@ -117,7 +118,8 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(IO) {
             user.id = randomUUID().toString()
             user.name = userDao.get(prefs.id.toString())?.name.toString()
-            if (user.img.isEmpty()) {
+            user.img = userDao.get(prefs.id.toString())?.img.toString()
+            if (user.img == "") {
                 user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
             }
             withContext(Main) {
