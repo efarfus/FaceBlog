@@ -9,6 +9,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
 import com.angellira.eduardoApp.adapter.Produto
 import com.angellira.eduardoApp.adapter.ProductAdapter
 import com.angellira.eduardoApp.databinding.ActivityMarketplaceBinding
@@ -31,6 +33,14 @@ class MarketplaceActivity : AppCompatActivity() {
         setupView()
         setSupportActionBar(binding.myToolbar)
         recyclerView()
+
+        addItem()
+    }
+
+    private fun addItem() {
+        binding.add.setOnClickListener {
+            startActivity(Intent(this, AddMarketItemActivity::class.java))
+        }
     }
 
     private fun recyclerView() {

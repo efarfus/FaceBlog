@@ -32,8 +32,6 @@ class LoginActivity : AppCompatActivity() {
     private val prefs by lazy { Preferences(this) }
     private var users: MutableList<User> = mutableListOf()
     private lateinit var db: AppDatabase
-    private lateinit var postsDao: PostsDao
-    private lateinit var marketItemDao: MarketItemDao
     private lateinit var userDao: UserDao
 
     @SuppressLint("SuspiciousIndentation")
@@ -72,8 +70,6 @@ class LoginActivity : AppCompatActivity() {
                 applicationContext,
                 AppDatabase::class.java, "faceblog.db"
             ).build()
-            postsDao = db.postsDao()
-            marketItemDao = db.marketItemDao()
             userDao = db.userDao()
         }
     }

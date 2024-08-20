@@ -74,28 +74,28 @@ class MainActivity : AppCompatActivity() {
 
     private fun postar() {
         binding.enviarPost.setOnClickListener {
-            setUser()
-            if (binding.caixaPost.text.toString().isNotEmpty()) {
-                lifecycleScope.launch(IO) {
-                    val post =
-                        Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
-                    postsDao.insert(post)
-                    withContext(Main) {
-                        binding.caixaPost.text.clear()
-                        hideKeyboard(this@MainActivity, currentFocus ?: View(this@MainActivity))
-                        Toast.makeText(
-                            this@MainActivity,
-                            "Post carregado com sucesso",
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
+            lifecycleScope.launch {
+                withContext(IO) {
 
+                    setUser()
+
+                    if (binding.caixaPost.text.toString().isNotEmpty()) {
+                        val post =
+                            Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
+                        postsDao.insert(post)
                     }
+                }
+
+                withContext(Main) {
+                    binding.caixaPost.text.clear()
+                    hideKeyboard(this@MainActivity, currentFocus ?: View(this@MainActivity))
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Post carregado com sucesso",
+                        Toast.LENGTH_LONG
+                    ).show()
                     loadPosts()
                 }
-            } else {
-                Toast.makeText(this@MainActivity, "Post vazio", Toast.LENGTH_LONG)
-                    .show()
             }
         }
     }
@@ -110,24 +110,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun hideKeyboard(context: Context, view: View) {
-        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun setUser() {
-        lifecycleScope.launch(IO) {
-            user.id = randomUUID().toString()
-            user.name = userDao.get(prefs.id.toString())?.name.toString()
-            user.img = userDao.get(prefs.id.toString())?.img.toString()
-            if (user.img == "") {
-                user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
-            }
-            withContext(Main) {
-                binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
-            }
+    private suspend fun setUser() = withContext(IO) {
+        val userEntity = userDao.get(prefs.id.toString())
+        user.id = randomUUID().toString()
+        user.name = userEntity?.name ?: "Usuário Desconhecido"
+        user.img = userEntity?.img ?: "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
 
+        withContext(Main) {
+            binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
         }
     }
+
 
     private fun recyclerView(listPosts: List<Posts>) {
         recyclerView = binding.recyclerViewPosts

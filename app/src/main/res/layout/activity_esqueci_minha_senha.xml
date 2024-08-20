@@ -26,7 +26,7 @@
 
 
     <EditText
-        android:id="@+id/boxEmail"
+        android:id="@+id/boxDescricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="116dp"
@@ -44,8 +44,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email"
-        app:layout_constraintBottom_toTopOf="@+id/boxEmail"
-        app:layout_constraintStart_toStartOf="@+id/boxEmail"
+        app:layout_constraintBottom_toTopOf="@+id/boxDescricao"
+        app:layout_constraintStart_toStartOf="@+id/boxDescricao"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintVertical_bias="1.0" />
 
@@ -67,14 +67,14 @@
         android:layout_height="wrap_content"
         android:text="Confirme seu email:"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/boxEmail"
+        app:layout_constraintBottom_toTopOf="@+id/boxDescricao"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/logoFundo"
         android:layout_width="329dp"
         android:layout_height="546dp"
         android:alpha="0.1"
@@ -95,7 +95,7 @@
         app:layout_constraintBottom_toTopOf="@+id/rodape"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/boxEmail"
+        app:layout_constraintTop_toBottomOf="@+id/boxDescricao"
         app:layout_constraintVertical_bias="0.067" />
 
 

@@ -7,9 +7,9 @@ import androidx.room.PrimaryKey
 data class MarketItem(
     @PrimaryKey (autoGenerate = true)
     val id: Long = 0,
-    val user: String,
-    val img: String,
-    val price: String,
-    val title: String,
-    val description: String
+    var user: String = "",
+    var img: String = "",
+    var price: String = "",
+    var title: String = "",
+    var description: String = ""
 )
