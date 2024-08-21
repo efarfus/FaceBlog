@@ -7,13 +7,21 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import com.angellira.eduardoApp.adapter.Produto
+import androidx.room.Room
 import com.angellira.eduardoApp.adapter.ProductAdapter
+import com.angellira.eduardoApp.database.AppDatabase
+import com.angellira.eduardoApp.database.dao.MarketItemDao
+import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityMarketplaceBinding
+import com.angellira.eduardoApp.model.MarketItem
+import com.angellira.eduardoApp.preferences.Preferences
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class MarketplaceActivity : AppCompatActivity() {
@@ -21,19 +29,23 @@ class MarketplaceActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMarketplaceBinding
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ProductAdapter
-    private val produtoLists = listOf(
-        Produto("Chevette", "R$17.000,00", R.drawable.chevette),
-        Produto("Opala", "R$20.000,00", R.drawable.opala),
-        Produto("Gol quadrado", "R$10.000,00", R.drawable.golquadrado)
-        )
+    private val prefs by lazy { Preferences(this) }
+    private lateinit var marketItemDao: MarketItemDao
+    private lateinit var userDao: UserDao
+    private lateinit var db: AppDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding()
         setupView()
+        database()
         setSupportActionBar(binding.myToolbar)
-        recyclerView()
-
+        lifecycleScope.launch(IO) {
+            val produtoLists = marketItemDao.getAll()
+            withContext(Main) {
+                recyclerView(produtoLists)
+            }
+        }
         addItem()
     }
 
@@ -43,11 +55,28 @@ class MarketplaceActivity : AppCompatActivity() {
         }
     }
 
-    private fun recyclerView() {
+    private fun recyclerView(listPosts: List<MarketItem>) {
         recyclerView = binding.recyclerView
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = ProductAdapter(produtoLists)
+        recyclerView.layoutManager = LinearLayoutManager(this@MarketplaceActivity)
+
+        val adapter = ProductAdapter(listPosts) { _, _, _, _, _, id->
+            prefs.idItem = id
+            val intent = Intent(this@MarketplaceActivity, DetailedItemActivity::class.java)
+            startActivity(intent)
+        }
         recyclerView.adapter = adapter
+    }
+
+    private fun database() {
+        lifecycleScope.launch(IO) {
+
+            db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java, "faceblog.db"
+            ).build()
+            marketItemDao = db.marketItemDao()
+            userDao = db.userDao()
+        }
     }
 
     private fun setupView() {
@@ -70,7 +99,7 @@ class MarketplaceActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_profile -> {
-            startActivity(Intent(this,ProfileActivity::class.java))
+            startActivity(Intent(this, ProfileActivity::class.java))
 
             true
         }

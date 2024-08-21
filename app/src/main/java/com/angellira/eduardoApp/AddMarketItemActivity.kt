@@ -22,8 +22,7 @@ import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityAddMarketItemBinding
 import com.angellira.eduardoApp.model.MarketItem
 import com.angellira.eduardoApp.preferences.Preferences
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -35,37 +34,57 @@ class AddMarketItemActivity : AppCompatActivity() {
     private val prefs by lazy { Preferences(this) }
     private val marketItem = MarketItem()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupView()
         binding()
-        database()
-        setUser()
-        loadGif()
-        addItem()
+        setupView()
+
+        // Inicializa o banco de dados e DAOs antes de outras operações
+        lifecycleScope.launch {
+            initializeDatabase()  // Inicializa o banco de dados e DAOs
+            setUser()  // Agora userDao está inicializado
+            loadGif()
+            addItem()
+        }
     }
 
-    private fun setUser() {
-        lifecycleScope.launch(IO) {
-            marketItem.user = userDao.get(prefs.id.toString())!!.name
+    private suspend fun initializeDatabase() {
+        withContext(Dispatchers.IO) {
+            db = Room.databaseBuilder(
+                applicationContext,
+                AppDatabase::class.java, "faceblog.db"
+            ).build()
+            marketItemDao = db.marketItemDao()
+            userDao = db.userDao()
+        }
+    }
+
+    private suspend fun setUser() {
+        withContext(Dispatchers.IO) {
+            marketItem.user = userDao.get(prefs.id.toString())?.name ?: "Unknown"
         }
     }
 
     private fun addItem() {
         binding.cadastrar.setOnClickListener {
-            if (binding.boxDescricao.text.toString() != "" && binding.boxTitulo.text.toString() != "" && binding.boxPreco.text.toString() != "" && binding.boxImageSrc.text.toString() != "") {
+            if (binding.boxDescricao.text.toString().isNotEmpty() &&
+                binding.boxTitulo.text.toString().isNotEmpty() &&
+                binding.boxPreco.text.toString().isNotEmpty() &&
+                binding.boxImageSrc.text.toString().isNotEmpty()
+            ) {
 
                 marketItem.title = binding.boxTitulo.text.toString()
                 marketItem.description = binding.boxDescricao.text.toString()
                 marketItem.price = binding.boxPreco.text.toString()
                 marketItem.img = binding.boxImageSrc.text.toString()
-                lifecycleScope.launch(IO) {
+
+                lifecycleScope.launch(Dispatchers.IO) {
                     marketItemDao.insert(marketItem)
                 }
                 clearBoxes()
-                Toast.makeText(this, "Item Cadastrado com sucesso", Toast.LENGTH_LONG)
-                    .show()
+                Toast.makeText(this, "Item Cadastrado com sucesso", Toast.LENGTH_LONG).show()
+                startActivity(Intent(this, MarketplaceActivity::class.java))
+                finishAffinity()
             } else {
                 Toast.makeText(this, "Dados estão incorretos, tente novamente", Toast.LENGTH_LONG)
                     .show()
@@ -94,18 +113,6 @@ class AddMarketItemActivity : AppCompatActivity() {
         binding.gif.load(R.drawable.marketplacegif, imageLoader)
     }
 
-    private fun database() {
-        lifecycleScope.launch(IO) {
-
-            db = Room.databaseBuilder(
-                applicationContext,
-                AppDatabase::class.java, "faceblog.db"
-            ).build()
-            marketItemDao = db.marketItemDao()
-            userDao = db.userDao()
-        }
-    }
-
     private fun binding() {
         binding = ActivityAddMarketItemBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -113,7 +120,6 @@ class AddMarketItemActivity : AppCompatActivity() {
 
     private fun setupView() {
         enableEdgeToEdge()
-        setContentView(R.layout.activity_add_market_item)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -129,12 +135,9 @@ class AddMarketItemActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_profile -> {
             startActivity(Intent(this, ProfileActivity::class.java))
-
             true
         }
 
-        else -> {
-            super.onOptionsItemSelected(item)
-        }
+        else -> super.onOptionsItemSelected(item)
     }
 }
