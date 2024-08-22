@@ -24,6 +24,7 @@ import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityMainBinding
 import com.angellira.eduardoApp.model.Posts
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -39,6 +40,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
     private lateinit var postsDao: PostsDao
     private lateinit var userDao: UserDao
+    private val apiService = ApiServiceFaceBlog.retrofitService
+
 
 
     @SuppressLint("SetTextI18n")
@@ -48,9 +51,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(binding.myToolbar)
 
         lifecycleScope.launch(IO) {
-
             database()
-
             setUser()
             loadPosts()
             withContext(Main)
@@ -58,9 +59,7 @@ class MainActivity : AppCompatActivity() {
                 marketplace(Intent(this@MainActivity, MarketplaceActivity::class.java))
                 postar()
             }
-
         }
-
     }
 
     private fun database() {
@@ -102,10 +101,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadPosts() {
         lifecycleScope.launch(IO) {
-            val postsList = postsDao.getAll()
-            withContext(Main) {
-                recyclerView(postsList)
+            try {
+                val postsList = apiService.getPosts()
+                withContext(Main) {
+                    recyclerView(postsList)
+                }
+            }catch (e:Exception){
+                val postsList = postsDao.getAll()
+                withContext(Main) {
+                    recyclerView(postsList)
+                }
             }
+
         }
     }
 
@@ -116,14 +123,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private suspend fun setUser() = withContext(IO) {
-        val userEntity = userDao.get(prefs.id.toString())
-        user.id = randomUUID().toString()
-        user.name = userEntity?.name ?: "Usuário Desconhecido"
-        user.img = userEntity?.img ?: "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
 
-        withContext(Main) {
-            binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
+        try {
+            val userEntity = apiService.getUserById(prefs.id.toString())
+            user.name = userEntity.name
+            user.img = userEntity.img
+            withContext(Main) {
+                binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
+            }
+        }catch (e:Exception){
+            val userEntity = userDao.get(prefs.id.toString())
+            user.id = randomUUID().toString()
+            user.name = userEntity?.name.toString()
+            user.img = userEntity?.img.toString()
+            withContext(Main) {
+                binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
+            }
         }
+
     }
 
 

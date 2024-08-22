@@ -1,77 +1,70 @@
 package com.angellira.eduardoApp.network
 
-import retrofit2.Call
+import androidx.room.Query
+import com.angellira.eduardoApp.model.MarketItem
+import com.angellira.eduardoApp.model.Posts
+import com.angellira.eduardoApp.model.User
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
-import retrofit2.http.Query
 
 
-//private const val BASE_URL = "http://127.0.0.1:8080/"
-//
-//object RetrofitInstance {
-//    private val retrofit by lazy {
-//        Retrofit.Builder()
-//            .baseUrl(BASE_URL)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//    }
+private const val BASE_URL = "http://192.168.115.151:8080/"
 
-//    interface ApiService {
-//
-//        // User Endpoints
-//        @GET("/users")
-//        fun getUsers(): Call<List<UserResponse>>
-//
-//        @GET("/users/{id}")
-//        fun getUserById(@Path("id") id: String): Call<UserResponse>
-//
-//        @GET("/users/login")
-//        fun loginUser(
-//            @Query("email") email: String,
-//            @Query("password") password: String
-//        ): Call<UserResponse>
-//
-//        @PATCH("/users/{id}")
-//        fun updateUser(@Path("id") id: String, @Body user: UserRequest): Call<Unit>
-//
-//        @POST("/users")
-//        fun addUser(@Body user: UserRequest): Call<Unit>
-//
-//        @DELETE("/users/{id}")
-//        fun deleteUser(@Path("id") id: String): Call<Unit>
-//
-//        // MarketItem Endpoints
-//        @GET("/marketItem/all")
-//        fun getMarketItems(): Call<List<MarketItemResponse>>
-//
-//        @GET("/marketItem/{id}")
-//        fun getMarketItemById(@Path("id") id: Long): Call<MarketItemResponse>
-//
-//        @POST("/marketItem")
-//        fun addMarketItem(@Body marketItem: MarketItemRequest): Call<Unit>
-//
-//        // Post Endpoints
-//        @GET("/posts")
-//        fun getPosts(): Call<List<PostResponse>>
-//
-//        @GET("/posts/{id}")
-//        fun getPostById(@Path("id") id: String): Call<PostResponse>
-//
-//        @PUT("/posts")
-//        fun addPost(@Body post: PostRequest): Call<Unit>
-//
-//        @DELETE("/posts/{id}")
-//        fun deletePost(@Path("id") id: String): Call<Unit>
-//    }
 
-//    val api: ApiService by lazy {
-//        retrofit.create(ApiService::class.java)
-//    }
-//}
+private val retrofit = Retrofit.Builder()
+    .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+    .baseUrl(BASE_URL)
+    .build()
+
+interface ApiService {
+    @GET("users")
+    suspend fun getUsers(): List<User>
+
+    @GET("/users/login")
+    suspend fun getUserByEmailAndPassword(
+        @retrofit2.http.Query("email") email: String,
+        @retrofit2.http.Query("password") password: String
+    ): User
+
+    @GET("users/{id}")
+    suspend fun getUserById(@Path("id") id: String): User
+
+
+    @GET("posts/{id}")
+    suspend fun getPostId(@Path("id") id: String): Posts
+
+    @GET("posts")
+    suspend fun getPosts(): List<Posts>
+
+    @POST("users")
+    suspend fun saveUser(@Body user: User)
+
+    @POST("posts")
+    suspend fun savePost(@Body post: Posts)
+
+    @POST("marketItem")
+    suspend fun saveMarketItem(@Body item: MarketItem)
+
+    @PUT("users/{id}")
+    suspend fun putUser(@Path("id") id: String, @Body user: User)
+
+
+    @DELETE("users/{id}")
+    suspend fun deleteUser(@Path("id") id: String): Response<Void>
+}
+
+object ApiServiceFaceBlog {
+    val retrofitService: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
+    }
+}
+

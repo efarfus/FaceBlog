@@ -3,6 +3,7 @@ package com.angellira.eduardoApp
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.widget.Button
 import android.widget.EditText
@@ -19,6 +20,7 @@ import com.angellira.eduardoApp.database.dao.PostsDao
 import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityLoginBinding
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -33,6 +35,8 @@ class LoginActivity : AppCompatActivity() {
     private var users: MutableList<User> = mutableListOf()
     private lateinit var db: AppDatabase
     private lateinit var userDao: UserDao
+    private val apiService = ApiServiceFaceBlog.retrofitService
+
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,9 +58,12 @@ class LoginActivity : AppCompatActivity() {
         val envioEmailSenha = binding.logar
 
         if (sharedPref != null)
+        {
             run {
                 logar(envioEmailSenha, caixaEmail, caixaSenha, pagMain)
             }
+        }
+
 
         cadastrar()
 
@@ -157,10 +164,16 @@ class LoginActivity : AppCompatActivity() {
         return true
     }
 
-    private fun checkCredentials(email: String, password: String): Boolean {
+    private suspend fun checkCredentials(email: String, password: String): Boolean {
         return if (email.isNotEmpty() && password.isNotEmpty()) {
-            users = userDao.getAll().toMutableList()
-            return users.any { it.email == email && it.password == password }
+            try {
+                users = apiService.getUsers().toMutableList()
+                return users.any { it.email == email && it.password == password }
+            }catch (e:Exception){
+                users = userDao.getAll().toMutableList()
+                return users.any { it.email == email && it.password == password }
+            }
+
         } else {
             false
         }
@@ -168,10 +181,13 @@ class LoginActivity : AppCompatActivity() {
 
     private suspend fun saveId(email: String, password: String) {
         lifecycleScope.launch(IO) {
-            val userId = userDao.getUserByEmailAndPassword(email, password)?.id.toString()
-            prefs.id = userId
+            try {
+                val userId = apiService.getUserByEmailAndPassword(email, password).id
+                prefs.id = userId
+            }catch (e:Exception){
+                val userId = userDao.getUserByEmailAndPassword(email, password)?.id.toString()
+                prefs.id = userId
+            }
         }
     }
-
-
 }

@@ -201,10 +201,8 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun setUser() {
         lifecycleScope.launch(IO) {
+
             user = userDao.get(prefs.id.toString())!!
-            if (user.img == "") {
-                user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
-            }
             withContext(Main) {
                 setProfilePicture()
                 showDataUser()
@@ -244,5 +242,4 @@ class ProfileActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.itens, menu)
         return true
     }
-
 }

@@ -14,8 +14,11 @@ import com.angellira.eduardoApp.database.AppDatabase
 import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityCadastroBinding
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.network.ApiService
+import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import retrofit2.Retrofit
 import java.util.UUID.randomUUID
 
 class CadastroActivity : AppCompatActivity() {
@@ -23,6 +26,8 @@ class CadastroActivity : AppCompatActivity() {
     private val user = User()
     private lateinit var db: AppDatabase
     private lateinit var userDao: UserDao
+    private val apiService = ApiServiceFaceBlog.retrofitService
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +38,6 @@ class CadastroActivity : AppCompatActivity() {
         setSupportActionBar(binding.myToolbar)
 
         val intent = Intent(this, LoginActivity::class.java)
-
         cadastrar(user, intent)
     }
 
@@ -65,8 +69,13 @@ class CadastroActivity : AppCompatActivity() {
 
             if (user.password == passwordConfirmation && user.email.isNotEmpty() && user.name.isNotEmpty() && user.password.isNotEmpty() && passwordConfirmation.isNotEmpty()) {
 
+                if(user.img.isEmpty())
+                {
+                    user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
+                }
                 lifecycleScope.launch(IO) {
                     userDao.insert(user)
+                    apiService.saveUser(user)
                 }
                 startActivity(intent)
                 finishAffinity()
