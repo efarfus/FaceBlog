@@ -19,6 +19,7 @@ import com.angellira.eduardoApp.database.dao.PostsDao
 import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityProfileBinding
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.network.PexelsApi
 import com.angellira.eduardoApp.preferences.Preferences
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -37,6 +38,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var postsDao: PostsDao
     private lateinit var marketItemDao: MarketItemDao
     private lateinit var userDao: UserDao
+    private val apiService = ApiServiceFaceBlog.retrofitService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +63,7 @@ class ProfileActivity : AppCompatActivity() {
                 .setPositiveButton("Sim") { _, _ ->
                     lifecycleScope.launch(IO) {
                         user.img = pexelsApi.getRandomPhotoUrl().toString()
+                        apiService.putUser(prefs.id.toString(), user)
                         userDao.putImg(user.img, prefs.id.toString())
                         withContext(Main) {
                             setProfilePicture()
@@ -96,6 +99,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun putAll() {
         lifecycleScope.launch(IO) {
+            apiService.putUser(prefs.id.toString(), user)
             userDao.updateUser(prefs.id.toString(), user.name, user.email, user.password)
         }
     }
@@ -132,6 +136,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun deleteUser() {
         val pagLogin = Intent(this, SplashActivity::class.java)
         lifecycleScope.launch(IO) {
+            apiService.deleteUser(prefs.id.toString())
             userDao.delete(user)
             withContext(Main) {
                 prefs.clear()
@@ -202,11 +207,20 @@ class ProfileActivity : AppCompatActivity() {
     private fun setUser() {
         lifecycleScope.launch(IO) {
 
-            user = userDao.get(prefs.id.toString())!!
-            withContext(Main) {
-                setProfilePicture()
-                showDataUser()
+            try{
+                user = apiService.getUserById(prefs.id.toString())
+                withContext(Main) {
+                    setProfilePicture()
+                    showDataUser()
+                }
+            }catch (e:Exception) {
+                user = userDao.get(prefs.id.toString())!!
+                withContext(Main) {
+                    setProfilePicture()
+                    showDataUser()
+                }
             }
+
         }
     }
 

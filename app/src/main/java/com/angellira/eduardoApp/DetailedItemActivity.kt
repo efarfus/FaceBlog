@@ -15,6 +15,7 @@ import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityDetailedItemBinding
 import com.angellira.eduardoApp.model.MarketItem
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -29,6 +30,7 @@ class DetailedItemActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
     private var marketItem: MarketItem? = null
     private var user: User? = null
+    private val apiService = ApiServiceFaceBlog.retrofitService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +53,14 @@ class DetailedItemActivity : AppCompatActivity() {
 
     private fun loadData() {
         lifecycleScope.launch(IO) {
-            user = userDao.get(prefs.id.toString())
-            marketItem = marketItemDao.get(prefs.idItem.toString())
+            try {
+                user = apiService.getUserById(prefs.id.toString())
+                marketItem = apiService.getItemById(prefs.idItem.toString())
+            }catch (e:Exception){
+                user = userDao.get(prefs.id.toString())
+                marketItem = marketItemDao.get(prefs.idItem.toString())
+            }
+
 
             withContext(Main) {
                 if (user != null && marketItem != null) {

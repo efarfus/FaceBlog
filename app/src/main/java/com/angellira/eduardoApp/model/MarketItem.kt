@@ -2,8 +2,10 @@ package com.angellira.eduardoApp.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
 @Entity
+@Serializable
 data class MarketItem(
     @PrimaryKey (autoGenerate = true)
     val id: Long = 0,

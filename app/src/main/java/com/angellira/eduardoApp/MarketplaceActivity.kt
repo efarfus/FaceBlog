@@ -17,6 +17,7 @@ import com.angellira.eduardoApp.database.dao.MarketItemDao
 import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityMarketplaceBinding
 import com.angellira.eduardoApp.model.MarketItem
+import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -33,6 +34,7 @@ class MarketplaceActivity : AppCompatActivity() {
     private lateinit var marketItemDao: MarketItemDao
     private lateinit var userDao: UserDao
     private lateinit var db: AppDatabase
+    private val apiService = ApiServiceFaceBlog.retrofitService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +43,16 @@ class MarketplaceActivity : AppCompatActivity() {
         database()
         setSupportActionBar(binding.myToolbar)
         lifecycleScope.launch(IO) {
-            val produtoLists = marketItemDao.getAll()
-            withContext(Main) {
-                recyclerView(produtoLists)
+            try{
+                val produtoLists = apiService.getItens()
+                withContext(Main) {
+                    recyclerView(produtoLists)
+                }
+            }catch (e:Exception){
+                val produtoLists = marketItemDao.getAll()
+                withContext(Main) {
+                    recyclerView(produtoLists)
+                }
             }
         }
         addItem()
@@ -100,7 +109,6 @@ class MarketplaceActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_profile -> {
             startActivity(Intent(this, ProfileActivity::class.java))
-
             true
         }
 

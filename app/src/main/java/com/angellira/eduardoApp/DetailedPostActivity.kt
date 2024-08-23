@@ -19,6 +19,7 @@ import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityDetailedPostBinding
 import com.angellira.eduardoApp.model.Posts
 import com.angellira.eduardoApp.model.User
+import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.Dispatchers.IO
@@ -34,6 +35,8 @@ class DetailedPostActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
     private lateinit var postsDao: PostsDao
     private lateinit var userDao: UserDao
+    private val apiService = ApiServiceFaceBlog.retrofitService
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -75,12 +78,17 @@ class DetailedPostActivity : AppCompatActivity() {
 
     private suspend fun setUser(): User {
         return withContext(IO) {
-            userDao.get(prefs.id.toString()) ?: User()
+            try {
+                apiService.getUserById(prefs.id.toString())
+            }catch (e:Exception){
+                userDao.get(prefs.id.toString()) ?: User()
+            }
         }
     }
 
     private fun deletePost() {
         lifecycleScope.launch(IO) {
+            apiService.deletePost(prefs.idPost.toString())
             postsDao.delete(post)
             withContext(Main) {
                 binding.deleteButton.visibility = INVISIBLE
@@ -100,13 +108,24 @@ class DetailedPostActivity : AppCompatActivity() {
 
     private suspend fun loadPost(): Posts {
         return withContext(IO) {
-            val loadedPost = postsDao.get(prefs.idPost.toString()) ?: Posts()
-            withContext(Main) {
-                binding.nameUser.text = loadedPost.user
-                binding.textUser.text = loadedPost.message
-                binding.imageUser.load(loadedPost.img)
+            try {
+                val loadedPost = apiService.getPostId(prefs.idPost.toString())
+                withContext(Main) {
+                    binding.nameUser.text = loadedPost.user
+                    binding.textUser.text = loadedPost.message
+                    binding.imageUser.load(loadedPost.img)
+                }
+                loadedPost
+            }catch (e:Exception){
+                val loadedPost = postsDao.get(prefs.idPost.toString()) ?: Posts()
+                withContext(Main) {
+                    binding.nameUser.text = loadedPost.user
+                    binding.textUser.text = loadedPost.message
+                    binding.imageUser.load(loadedPost.img)
+                }
+                loadedPost
             }
-            loadedPost
+
         }
     }
 

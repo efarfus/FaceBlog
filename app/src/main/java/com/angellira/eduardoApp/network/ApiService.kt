@@ -12,6 +12,7 @@ import retrofit2.Retrofit
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -38,12 +39,17 @@ interface ApiService {
     @GET("users/{id}")
     suspend fun getUserById(@Path("id") id: String): User
 
+    @GET("marketItem/{id}")
+    suspend fun getItemById(@Path("id") id: String): MarketItem
 
     @GET("posts/{id}")
     suspend fun getPostId(@Path("id") id: String): Posts
 
     @GET("posts")
     suspend fun getPosts(): List<Posts>
+
+    @GET("marketItem/all")
+    suspend fun getItens(): List<MarketItem>
 
     @POST("users")
     suspend fun saveUser(@Body user: User)
@@ -52,14 +58,19 @@ interface ApiService {
     suspend fun savePost(@Body post: Posts)
 
     @POST("marketItem")
+    suspend fun saveItem(@Body marketItem: MarketItem)
+
+    @POST("marketItem")
     suspend fun saveMarketItem(@Body item: MarketItem)
 
-    @PUT("users/{id}")
+    @PATCH("users/{id}")
     suspend fun putUser(@Path("id") id: String, @Body user: User)
-
 
     @DELETE("users/{id}")
     suspend fun deleteUser(@Path("id") id: String): Response<Void>
+
+    @DELETE("posts/{id}")
+    suspend fun deletePost(@Path("id") id: String): Response<Void>
 }
 
 object ApiServiceFaceBlog {

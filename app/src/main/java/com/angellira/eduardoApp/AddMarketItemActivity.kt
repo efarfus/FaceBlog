@@ -21,6 +21,7 @@ import com.angellira.eduardoApp.database.dao.MarketItemDao
 import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityAddMarketItemBinding
 import com.angellira.eduardoApp.model.MarketItem
+import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.preferences.Preferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,6 +34,7 @@ class AddMarketItemActivity : AppCompatActivity() {
     private lateinit var db: AppDatabase
     private val prefs by lazy { Preferences(this) }
     private val marketItem = MarketItem()
+    private val apiService = ApiServiceFaceBlog.retrofitService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +63,11 @@ class AddMarketItemActivity : AppCompatActivity() {
 
     private suspend fun setUser() {
         withContext(Dispatchers.IO) {
-            marketItem.user = userDao.get(prefs.id.toString())?.name ?: "Unknown"
+            try {
+                marketItem.user = apiService.getItemById(prefs.id.toString()).user
+            }catch (e:Exception){
+                marketItem.user = userDao.get(prefs.id.toString())?.name ?: "Unknown"
+            }
         }
     }
 
@@ -79,6 +85,7 @@ class AddMarketItemActivity : AppCompatActivity() {
                 marketItem.img = binding.boxImageSrc.text.toString()
 
                 lifecycleScope.launch(Dispatchers.IO) {
+                    apiService.saveItem(marketItem)
                     marketItemDao.insert(marketItem)
                 }
                 clearBoxes()

@@ -30,6 +30,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
 import java.util.UUID.randomUUID
 
 class MainActivity : AppCompatActivity() {
@@ -41,8 +42,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var postsDao: PostsDao
     private lateinit var userDao: UserDao
     private val apiService = ApiServiceFaceBlog.retrofitService
-
-
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,13 +74,14 @@ class MainActivity : AppCompatActivity() {
         binding.enviarPost.setOnClickListener {
             lifecycleScope.launch {
                 withContext(IO) {
-
                     setUser()
 
                     if (binding.caixaPost.text.toString().isNotEmpty()) {
-                        val post =
-                            Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
+                        user.id = randomUUID().toString()
+                        val post = Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
+                        apiService.savePost(post)
                         postsDao.insert(post)
+                        loadPosts()
                     }
                 }
 
