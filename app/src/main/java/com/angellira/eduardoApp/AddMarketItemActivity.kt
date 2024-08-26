@@ -40,11 +40,11 @@ class AddMarketItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding()
         setupView()
+        setSupportActionBar(binding.myToolbar)
 
-        // Inicializa o banco de dados e DAOs antes de outras operações
         lifecycleScope.launch {
-            initializeDatabase()  // Inicializa o banco de dados e DAOs
-            setUser()  // Agora userDao está inicializado
+            initializeDatabase()
+            setUser()
             loadGif()
             addItem()
         }

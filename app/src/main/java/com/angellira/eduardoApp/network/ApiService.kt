@@ -71,6 +71,9 @@ interface ApiService {
 
     @DELETE("posts/{id}")
     suspend fun deletePost(@Path("id") id: String): Response<Void>
+
+    @DELETE("marketItem/{id}")
+    suspend fun deleteItem(@Path("id") id: String): Response<Void>
 }
 
 object ApiServiceFaceBlog {
