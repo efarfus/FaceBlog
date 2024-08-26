@@ -29,7 +29,6 @@ class MarketplaceActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMarketplaceBinding
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: ProductAdapter
     private val prefs by lazy { Preferences(this) }
     private lateinit var marketItemDao: MarketItemDao
     private lateinit var userDao: UserDao
@@ -43,12 +42,12 @@ class MarketplaceActivity : AppCompatActivity() {
         database()
         setSupportActionBar(binding.myToolbar)
         lifecycleScope.launch(IO) {
-            try{
+            try {
                 val produtoLists = apiService.getItens()
                 withContext(Main) {
                     recyclerView(produtoLists)
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 val produtoLists = marketItemDao.getAll()
                 withContext(Main) {
                     recyclerView(produtoLists)
@@ -68,7 +67,7 @@ class MarketplaceActivity : AppCompatActivity() {
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(this@MarketplaceActivity)
 
-        val adapter = ProductAdapter(listPosts) { _, _, _, _, _, id->
+        val adapter = ProductAdapter(listPosts) { _, _, _, _, _, id ->
             prefs.idItem = id
             val intent = Intent(this@MarketplaceActivity, DetailedItemActivity::class.java)
             startActivity(intent)

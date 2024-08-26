@@ -5,7 +5,7 @@ import okhttp3.Request
 import org.json.JSONObject
 import kotlin.random.Random
 
-class PexelsApi() {
+class PexelsApi {
 
     private val client = OkHttpClient()
 

@@ -3,7 +3,6 @@ package com.angellira.eduardoApp
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.widget.Button
 import android.widget.EditText
@@ -15,8 +14,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.angellira.eduardoApp.database.AppDatabase
-import com.angellira.eduardoApp.database.dao.MarketItemDao
-import com.angellira.eduardoApp.database.dao.PostsDao
 import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityLoginBinding
 import com.angellira.eduardoApp.model.User
@@ -57,8 +54,7 @@ class LoginActivity : AppCompatActivity() {
         val caixaSenha = binding.boxSenha
         val envioEmailSenha = binding.logar
 
-        if (sharedPref != null)
-        {
+        if (sharedPref != null) {
             run {
                 logar(envioEmailSenha, caixaEmail, caixaSenha, pagMain)
             }
@@ -135,13 +131,13 @@ class LoginActivity : AppCompatActivity() {
             lifecycleScope.launch(IO) {
                 if (checkCredentials(emailTentado, senhaTentada)) {
                     saveId(emailTentado, senhaTentada)
-                    withContext(Main){
+                    withContext(Main) {
                         prefs.isLogged = true
                         startActivity(pagMain)
                         clear(caixaEmail, caixaSenha)
                     }
                 } else {
-                    withContext(Main){
+                    withContext(Main) {
                         Toast.makeText(
                             this@LoginActivity,
                             "Email ou senha incorretos",
@@ -169,7 +165,7 @@ class LoginActivity : AppCompatActivity() {
             try {
                 users = apiService.getUsers().toMutableList()
                 return users.any { it.email == email && it.password == password }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 users = userDao.getAll().toMutableList()
                 return users.any { it.email == email && it.password == password }
             }
@@ -184,7 +180,7 @@ class LoginActivity : AppCompatActivity() {
             try {
                 val userId = apiService.getUserByEmailAndPassword(email, password).id
                 prefs.id = userId
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 val userId = userDao.getUserByEmailAndPassword(email, password)?.id.toString()
                 prefs.id = userId
             }

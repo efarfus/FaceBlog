@@ -1,6 +1,5 @@
 package com.angellira.eduardoApp.network
 
-import androidx.room.Query
 import com.angellira.eduardoApp.model.MarketItem
 import com.angellira.eduardoApp.model.Posts
 import com.angellira.eduardoApp.model.User
@@ -14,7 +13,6 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Path
 
 
@@ -59,9 +57,9 @@ interface ApiService {
 
     @POST("marketItem")
     suspend fun saveItem(@Body marketItem: MarketItem)
-
-    @POST("marketItem")
-    suspend fun saveMarketItem(@Body item: MarketItem)
+//
+//    @POST("marketItem")
+//    suspend fun saveMarketItem(@Body item: MarketItem)
 
     @PATCH("users/{id}")
     suspend fun putUser(@Path("id") id: String, @Body user: User)

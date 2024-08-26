@@ -192,7 +192,7 @@ class ProfileActivity : AppCompatActivity() {
 
 
     private fun setProfilePicture() {
-            binding.pictureProfile.load(user.img)
+        binding.pictureProfile.load(user.img)
     }
 
     private fun setupView() {
@@ -207,13 +207,13 @@ class ProfileActivity : AppCompatActivity() {
     private fun setUser() {
         lifecycleScope.launch(IO) {
 
-            try{
+            try {
                 user = apiService.getUserById(prefs.id.toString())
                 withContext(Main) {
                     setProfilePicture()
                     showDataUser()
                 }
-            }catch (e:Exception) {
+            } catch (e: Exception) {
                 user = userDao.get(prefs.id.toString())!!
                 withContext(Main) {
                     setProfilePicture()

@@ -30,7 +30,6 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.UUID
 import java.util.UUID.randomUUID
 
 class MainActivity : AppCompatActivity() {
@@ -78,7 +77,8 @@ class MainActivity : AppCompatActivity() {
 
                     if (binding.caixaPost.text.toString().isNotEmpty()) {
                         user.id = randomUUID().toString()
-                        val post = Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
+                        val post =
+                            Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
                         apiService.savePost(post)
                         postsDao.insert(post)
                         loadPosts()
@@ -106,7 +106,7 @@ class MainActivity : AppCompatActivity() {
                 withContext(Main) {
                     recyclerView(postsList)
                 }
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 val postsList = postsDao.getAll()
                 withContext(Main) {
                     recyclerView(postsList)
@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity() {
             withContext(Main) {
                 binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
             }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             val userEntity = userDao.get(prefs.id.toString())
             user.id = randomUUID().toString()
             user.name = userEntity?.name.toString()
