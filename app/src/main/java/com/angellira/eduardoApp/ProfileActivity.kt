@@ -3,21 +3,26 @@ package com.angellira.eduardoApp
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
-import android.view.View.INVISIBLE
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import coil.load
+import com.angellira.eduardoApp.adapter.PostAdapter
 import com.angellira.eduardoApp.database.AppDatabase
 import com.angellira.eduardoApp.database.dao.MarketItemDao
 import com.angellira.eduardoApp.database.dao.PostsDao
 import com.angellira.eduardoApp.database.dao.UserDao
 import com.angellira.eduardoApp.databinding.ActivityProfileBinding
+import com.angellira.eduardoApp.model.Posts
 import com.angellira.eduardoApp.model.User
 import com.angellira.eduardoApp.network.ApiServiceFaceBlog
 import com.angellira.eduardoApp.network.PexelsApi
@@ -36,6 +41,7 @@ class ProfileActivity : AppCompatActivity() {
     private val prefs by lazy { Preferences(this) }
     private lateinit var db: AppDatabase
     private lateinit var postsDao: PostsDao
+    private lateinit var recyclerView: RecyclerView
     private lateinit var marketItemDao: MarketItemDao
     private lateinit var userDao: UserDao
     private val apiService = ApiServiceFaceBlog.retrofitService
@@ -52,7 +58,52 @@ class ProfileActivity : AppCompatActivity() {
         edit()
         createDialogEdit()
         cancelEdit()
+        showInfos()
         createPhoto()
+    }
+
+    private fun loadPosts() {
+        lifecycleScope.launch(IO) {
+            try {
+                val postsList = apiService.getUserPosts(user.name)
+                withContext(Main) {
+                    recyclerView(postsList)
+                }
+            } catch (e: Exception) {
+//                Log.e("vsffff", "$e")
+///               val postsList = postsDao.getAll()
+//                withContext(Main) {
+//                    recyclerView(postsList)
+//                }
+                withContext(Main){
+                    binding.error.visibility = VISIBLE
+                }
+            }
+
+        }
+    }
+
+    private fun recyclerView(listPosts: List<Posts>) {
+        recyclerView = binding.recyclerViewPosts
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        val adapter = PostAdapter(listPosts) { _, _, id, _ ->
+            prefs.idPost = id
+            val intent = Intent(this@ProfileActivity, DetailedPostActivity::class.java)
+            startActivity(intent)
+        }
+        recyclerView.adapter = adapter
+    }
+
+    private fun showInfos() {
+        binding.showInfos.setOnClickListener {
+            binding.nome.visibility = VISIBLE
+            binding.email.visibility = VISIBLE
+            binding.senha.visibility = VISIBLE
+            binding.showInfos.visibility = GONE
+            binding.cancelEditButton.visibility = VISIBLE
+            binding.recyclerViewPosts.visibility = GONE
+        }
     }
 
     private fun createPhoto() {
@@ -116,21 +167,23 @@ class ProfileActivity : AppCompatActivity() {
         binding.editTextPassword.visibility = VISIBLE
         binding.cancelEditButton.visibility = VISIBLE
         binding.confirmButton.visibility = VISIBLE
-        binding.nome.visibility = INVISIBLE
-        binding.email.visibility = INVISIBLE
-        binding.senha.visibility = INVISIBLE
+        binding.recyclerViewPosts.visibility = GONE
+        binding.email.visibility = GONE
+        binding.senha.visibility = GONE
+        binding.showInfos.visibility = GONE
     }
 
     private fun switchLayoutBack() {
-        binding.editTextName.visibility = INVISIBLE
-        binding.editTextEmailAddress.visibility = INVISIBLE
-        binding.editTextPassword.visibility = INVISIBLE
-        binding.cancelEditButton.visibility = INVISIBLE
-        binding.confirmButton.visibility = INVISIBLE
+        binding.editTextName.visibility = GONE
+        binding.editTextEmailAddress.visibility = GONE
+        binding.editTextPassword.visibility = GONE
+        binding.cancelEditButton.visibility = GONE
+        binding.confirmButton.visibility = GONE
+        binding.showInfos.visibility = VISIBLE
+        binding.email.visibility = GONE
+        binding.senha.visibility = GONE
+        binding.recyclerViewPosts.visibility = VISIBLE
 
-        binding.nome.visibility = VISIBLE
-        binding.email.visibility = VISIBLE
-        binding.senha.visibility = VISIBLE
     }
 
     private fun deleteUser() {
@@ -212,6 +265,7 @@ class ProfileActivity : AppCompatActivity() {
                 withContext(Main) {
                     setProfilePicture()
                     showDataUser()
+                    loadPosts()
                 }
             } catch (e: Exception) {
                 user = userDao.get(prefs.id.toString())!!

@@ -1,5 +1,6 @@
 package com.angellira.eduardoApp.network
 
+import androidx.room.Query
 import com.angellira.eduardoApp.model.MarketItem
 import com.angellira.eduardoApp.model.Posts
 import com.angellira.eduardoApp.model.User
@@ -45,6 +46,9 @@ interface ApiService {
 
     @GET("posts")
     suspend fun getPosts(): List<Posts>
+
+    @GET("posts/user/{user}")
+    suspend fun getUserPosts(@Path("user") user: String): List<Posts>
 
     @GET("marketItem/all")
     suspend fun getItens(): List<MarketItem>

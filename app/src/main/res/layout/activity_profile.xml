@@ -17,7 +17,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.497"
         app:srcCompat="@drawable/roxo" />
 
     <androidx.appcompat.widget.Toolbar
@@ -41,20 +40,36 @@
         android:layout_marginTop="4dp"
         android:gravity="center"
         android:textSize="20sp"
+        android:visibility="gone"
+
         android:textStyle="bold|italic"
         app:layout_constraintStart_toStartOf="@+id/nome"
         app:layout_constraintTop_toBottomOf="@+id/nome" />
 
     <TextView
+        android:id="@+id/error"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:visibility="gone"
+        android:text="Sem posts até o momento"
+        android:textStyle="bold|italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nome"
+        app:layout_constraintBottom_toTopOf="@id/showInfos"/>
+
+    <TextView
         android:id="@+id/nome"
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:layout_marginTop="220dp"
         android:gravity="center"
         android:textSize="20sp"
         android:textStyle="bold|italic"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/pictureProfile" />
 
     <TextView
         android:id="@+id/senha"
@@ -65,7 +80,7 @@
         android:textSize="20sp"
         android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="@+id/nome"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/email"
         app:layout_constraintTop_toBottomOf="@+id/email" />
 
@@ -94,26 +109,51 @@
     <ImageView
         android:id="@+id/pictureProfile"
         android:layout_width="200dp"
-        android:layout_marginTop="15dp"
         android:layout_height="180dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:srcCompat="@drawable/baseline_person_25" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPosts"
+        android:layout_width="409dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toTopOf="@id/showInfos"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/nome"
+        />
+
+
+
+
+    <Button
+        android:id="@+id/showInfos"
+        android:layout_width="190dp"
+        android:layout_height="70dp"
+        android:backgroundTint="#8935b2"
+        android:text="Informações"
+        android:textSize="20sp"
+        android:layout_marginBottom="15dp"
+        app:layout_constraintBottom_toTopOf="@+id/editarPerfil"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
         android:layout_marginLeft="15dp"
         android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
+        android:ems="10"
         android:gravity="start|top"
         android:hint="Novo nome"
         android:inputType="text"
         android:minHeight="48dp"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pictureProfile" />
@@ -129,7 +169,7 @@
         android:hint="Novo email"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextName"
@@ -146,7 +186,7 @@
         android:hint="Nova senha"
         android:inputType="textPassword"
         android:minHeight="48dp"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextEmailAddress" />
@@ -160,7 +200,7 @@
         android:backgroundTint="#8935b2"
         android:text="Alterar"
         android:textSize="25sp"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
