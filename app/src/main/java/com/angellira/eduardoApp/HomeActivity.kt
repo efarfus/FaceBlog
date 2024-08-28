@@ -104,12 +104,12 @@ class MainActivity : AppCompatActivity() {
             try {
                 val postsList = apiService.getPosts()
                 withContext(Main) {
-                    recyclerView(postsList)
+                    recyclerView(postsList.reversed())
                 }
             } catch (e: Exception) {
                 val postsList = postsDao.getAll()
                 withContext(Main) {
-                    recyclerView(postsList)
+                    recyclerView(postsList.reversed())
                 }
             }
 
@@ -132,10 +132,7 @@ class MainActivity : AppCompatActivity() {
                 binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
             }
         } catch (e: Exception) {
-            val userEntity = userDao.get(prefs.id.toString())
-            user.id = randomUUID().toString()
-            user.name = userEntity?.name.toString()
-            user.img = userEntity?.img.toString()
+            user = userDao.get(prefs.id.toString())!!
             withContext(Main) {
                 binding.caixaPost.hint = "No que você está pensando, ${user.name}?"
             }

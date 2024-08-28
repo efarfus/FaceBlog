@@ -34,7 +34,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var userDao: UserDao
     private val apiService = ApiServiceFaceBlog.retrofitService
 
-
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +59,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-
         cadastrar()
 
         esquecerSenha()
@@ -68,7 +66,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun database() {
         lifecycleScope.launch(IO) {
-
             db = Room.databaseBuilder(
                 applicationContext,
                 AppDatabase::class.java, "faceblog.db"
@@ -176,14 +173,17 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private suspend fun saveId(email: String, password: String) {
-        lifecycleScope.launch(IO) {
+
             try {
-                val userId = apiService.getUserByEmailAndPassword(email, password).id
-                prefs.id = userId
+                lifecycleScope.launch(IO) {
+                    val userId = apiService.getUserByEmailAndPassword(email, password).id
+                    prefs.id = userId
+                }
             } catch (e: Exception) {
-                val userId = userDao.getUserByEmailAndPassword(email, password)?.id.toString()
-                prefs.id = userId
+                lifecycleScope.launch(IO) {
+                    val userId = userDao.getUserByEmailAndPassword(email, password)?.id.toString()
+                    prefs.id = userId
+                }
             }
         }
     }
-}

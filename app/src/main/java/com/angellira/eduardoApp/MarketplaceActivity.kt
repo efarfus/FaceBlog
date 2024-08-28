@@ -45,12 +45,12 @@ class MarketplaceActivity : AppCompatActivity() {
             try {
                 val produtoLists = apiService.getItens()
                 withContext(Main) {
-                    recyclerView(produtoLists)
+                    recyclerView(produtoLists.reversed())
                 }
             } catch (e: Exception) {
                 val produtoLists = marketItemDao.getAll()
                 withContext(Main) {
-                    recyclerView(produtoLists)
+                    recyclerView(produtoLists.reversed())
                 }
             }
         }

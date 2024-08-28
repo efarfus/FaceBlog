@@ -16,6 +16,9 @@ interface PostsDao {
     @Query("SELECT * FROM posts WHERE id = :id")
     fun get(id: String): Posts?
 
+    @Query("SELECT * FROM posts WHERE user = :user")
+    fun getPostsUser(user: String): List<Posts>
+
     @Insert
     fun insertAll(posts: List<Posts>)
 

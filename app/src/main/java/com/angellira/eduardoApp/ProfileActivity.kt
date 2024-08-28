@@ -67,14 +67,13 @@ class ProfileActivity : AppCompatActivity() {
             try {
                 val postsList = apiService.getUserPosts(user.name)
                 withContext(Main) {
-                    recyclerView(postsList)
+                    recyclerView(postsList.reversed())
                 }
             } catch (e: Exception) {
-//                Log.e("vsffff", "$e")
-///               val postsList = postsDao.getAll()
-//                withContext(Main) {
-//                    recyclerView(postsList)
-//                }
+                val postsList = postsDao.getPostsUser(user.name)
+                withContext(Main) {
+                    recyclerView(postsList.reversed())
+                }
                 withContext(Main){
                     binding.error.visibility = VISIBLE
                 }
@@ -121,6 +120,10 @@ class ProfileActivity : AppCompatActivity() {
                         }
                     }
                 }
+                .setNeutralButton("Colocar URL própria"){ _, _ ->
+                    botaoeditarConta()
+                    setProfilePicture()
+                }
                 .setNegativeButton("Não") { dialog, _ ->
                     dialog.dismiss()
                 }
@@ -140,6 +143,11 @@ class ProfileActivity : AppCompatActivity() {
         putAll()
         startActivity(Intent(this, LoginActivity::class.java))
         prefs.clear()
+    }
+
+
+    private fun botaoeditarConta() {
+            startActivity(Intent(this, UrlSetActivity::class.java))
     }
 
     private fun edit() {
@@ -304,6 +312,8 @@ class ProfileActivity : AppCompatActivity() {
     private fun binding() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.myToolbar)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
