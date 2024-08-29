@@ -79,21 +79,34 @@ class MainActivity : AppCompatActivity() {
                         user.id = randomUUID().toString()
                         val post =
                             Posts(user.id, user.name, binding.caixaPost.text.toString(), user.img)
-                        apiService.savePost(post)
-                        postsDao.insert(post)
-                        loadPosts()
-                    }
-                }
+                        try {
+                            apiService.savePost(post)
+                        } catch (e: Exception) {
+                            withContext(Main) {
+                                binding.caixaPost.text.clear()
+                                Toast.makeText(
+                                    this@MainActivity,
+                                    "Não é possível postar algo sem internet, conecte-se e tente novamente",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                            return@withContext
+                        }
 
-                withContext(Main) {
-                    binding.caixaPost.text.clear()
-                    hideKeyboard(this@MainActivity, currentFocus ?: View(this@MainActivity))
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Post carregado com sucesso",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    loadPosts()
+                        postsDao.insert(post)
+                        withContext(Main) {
+                            binding.caixaPost.text.clear()
+                            hideKeyboard(this@MainActivity, currentFocus ?: View(this@MainActivity))
+                            Toast.makeText(
+                                this@MainActivity,
+                                "Post carregado com sucesso",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            loadPosts()
+                        }
+                    }
+
+
                 }
             }
         }

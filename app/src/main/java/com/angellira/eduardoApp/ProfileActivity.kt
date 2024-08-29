@@ -1,14 +1,19 @@
 package com.angellira.eduardoApp
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
+import android.util.Base64
 import android.view.Menu
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -32,6 +37,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 
 
 class ProfileActivity : AppCompatActivity() {
@@ -45,6 +51,8 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var marketItemDao: MarketItemDao
     private lateinit var userDao: UserDao
     private val apiService = ApiServiceFaceBlog.retrofitService
+    private val PICK_IMAGE_REQUEST = 1
+    private var imagemBase64: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +68,7 @@ class ProfileActivity : AppCompatActivity() {
         cancelEdit()
         showInfos()
         createPhoto()
+
     }
 
     private fun loadPosts() {
@@ -74,13 +83,24 @@ class ProfileActivity : AppCompatActivity() {
                 withContext(Main) {
                     recyclerView(postsList.reversed())
                 }
-                withContext(Main){
+                withContext(Main) {
                     binding.error.visibility = VISIBLE
                 }
             }
 
         }
     }
+
+    fun decodeBase64ToBitmap(base64Str: String): Bitmap? {
+        return try {
+            val decodedBytes = Base64.decode(base64Str, Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+        } catch (e: IllegalArgumentException) {
+            null
+        }
+    }
+
+
 
     private fun recyclerView(listPosts: List<Posts>) {
         recyclerView = binding.recyclerViewPosts
@@ -109,7 +129,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.pictureProfile.setOnClickListener {
             MaterialAlertDialogBuilder(this)
                 .setTitle("Deseja gerar uma foto aleatória para foto de perfil?")
-                .setMessage("Foto gerada atráves de API Pexels.")
+                .setMessage("Foto gerada através de API Pexels.")
                 .setPositiveButton("Sim") { _, _ ->
                     lifecycleScope.launch(IO) {
                         user.img = pexelsApi.getRandomPhotoUrl().toString()
@@ -120,9 +140,8 @@ class ProfileActivity : AppCompatActivity() {
                         }
                     }
                 }
-                .setNeutralButton("Colocar URL própria"){ _, _ ->
-                    botaoeditarConta()
-                    setProfilePicture()
+                .setNeutralButton("Colocar imagem própria") { _, _ ->
+                    autorizacao()
                 }
                 .setNegativeButton("Não") { dialog, _ ->
                     dialog.dismiss()
@@ -146,10 +165,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-    private fun botaoeditarConta() {
-            startActivity(Intent(this, UrlSetActivity::class.java))
-    }
-
     private fun edit() {
         binding.editarPerfil.setOnClickListener {
             switchLayout()
@@ -157,6 +172,8 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun putAll() {
+
+        user.img = decodeBase64ToBitmap(imagemBase64!!).toString()
         lifecycleScope.launch(IO) {
             apiService.putUser(prefs.id.toString(), user)
             userDao.updateUser(prefs.id.toString(), user.name, user.email, user.password)
@@ -180,6 +197,7 @@ class ProfileActivity : AppCompatActivity() {
         binding.senha.visibility = GONE
         binding.showInfos.visibility = GONE
     }
+
 
     private fun switchLayoutBack() {
         binding.editTextName.visibility = GONE
@@ -206,6 +224,46 @@ class ProfileActivity : AppCompatActivity() {
                 finishAffinity()
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            val imageUri = data.data
+            if (imageUri != null) {
+                imagemBase64 = encodeImageToBase64(imageUri)
+
+
+                lifecycleScope.launch(IO) {
+                    putAll()
+                    withContext(Main) {
+                        setProfilePicture()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun autorizacao() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, PICK_IMAGE_REQUEST)
+    }
+
+
+    fun encodeImageToBase64(imageUri: Uri): String? {
+        val imageStream = contentResolver.openInputStream(imageUri)
+        val bitmap = BitmapFactory.decodeStream(imageStream)
+
+        if (bitmap == null) {
+            return null
+        }
+
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream)
+        val imageBytes = byteArrayOutputStream.toByteArray()
+
+        return android.util.Base64.encodeToString(imageBytes, android.util.Base64.DEFAULT)
     }
 
     private fun database() {
@@ -251,9 +309,23 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-
     private fun setProfilePicture() {
-        binding.pictureProfile.load(user.img)
+        try {
+            val image = decodeBase64ToBitmap(user.img)
+            binding.pictureProfile.setImageBitmap(image)
+        }catch (e:Exception){
+            binding.pictureProfile.load(user.img)
+        }
+
+    }
+
+    private fun setProfilePictureAlterar() {
+        try {
+//            binding.pictureProfile.setImageBitmap()
+        }catch (e:Exception){
+            binding.pictureProfile.load(user.img)
+        }
+
     }
 
     private fun setupView() {

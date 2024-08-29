@@ -127,13 +127,17 @@ class LoginActivity : AppCompatActivity() {
 
             lifecycleScope.launch(IO) {
                 if (checkCredentials(emailTentado, senhaTentada)) {
+                    // Espera o saveId ser concluído antes de continuar
                     saveId(emailTentado, senhaTentada)
                     withContext(Main) {
                         prefs.isLogged = true
                         startActivity(pagMain)
                         clear(caixaEmail, caixaSenha)
                     }
-                } else {
+                }
+
+
+            else {
                     withContext(Main) {
                         Toast.makeText(
                             this@LoginActivity,
@@ -144,6 +148,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
             }
+
         }
     }
 
@@ -173,17 +178,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private suspend fun saveId(email: String, password: String) {
-
-            try {
-                lifecycleScope.launch(IO) {
-                    val userId = apiService.getUserByEmailAndPassword(email, password).id
-                    prefs.id = userId
-                }
-            } catch (e: Exception) {
-                lifecycleScope.launch(IO) {
-                    val userId = userDao.getUserByEmailAndPassword(email, password)?.id.toString()
-                    prefs.id = userId
-                }
-            }
+        try {
+            val userId = apiService.getUserByEmailAndPassword(email, password).id
+            prefs.id = userId
+        } catch (e: Exception) {
+            val userId = userDao.getUserByEmailAndPassword(email, password)?.id.toString()
+            prefs.id = userId
         }
+    }
     }

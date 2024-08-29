@@ -91,7 +91,7 @@ class AddMarketItemActivity : AppCompatActivity() {
                 clearBoxes()
                 Toast.makeText(this, "Item Cadastrado com sucesso", Toast.LENGTH_LONG).show()
                 startActivity(Intent(this, MarketplaceActivity::class.java))
-                finishAffinity()
+                finish()
             } else {
                 Toast.makeText(this, "Dados estão incorretos, tente novamente", Toast.LENGTH_LONG)
                     .show()
