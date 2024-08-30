@@ -45,21 +45,21 @@ class CadastroActivity : AppCompatActivity() {
         setupView()
         setSupportActionBar(binding.myToolbar)
 
-        autorizacao()
+//        autorizacao()
 
 
         val intent = Intent(this, LoginActivity::class.java)
         cadastrar(user, intent)
     }
 
-    private fun autorizacao() {
-        binding.boxImageSrc.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK)
-            intent.type = "image/*"
-            startActivityForResult(intent, PICK_IMAGE_REQUEST)
-        }
-
-    }
+//    private fun autorizacao() {
+//        binding.boxImageSrc.setOnClickListener {
+//            val intent = Intent(Intent.ACTION_PICK)
+//            intent.type = "image/*"
+//            startActivityForResult(intent, PICK_IMAGE_REQUEST)
+//        }
+//
+//    }
 
     private fun setupView() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
@@ -110,7 +110,7 @@ class CadastroActivity : AppCompatActivity() {
             user.name = binding.boxNome.text.toString()
             user.email = binding.boxEmail.text.toString()
             user.password = binding.boxSenha.text.toString()
-            user.img = imagemBase64?:""
+            user.img = binding.boxSenha.text.toString()
             val passwordConfirmation = binding.boxConfirmarSenha.text.toString()
 
             if (user.password == passwordConfirmation && user.email.isNotEmpty() && user.name.isNotEmpty() && user.password.isNotEmpty() && passwordConfirmation.isNotEmpty()) {

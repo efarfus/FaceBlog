@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -88,7 +89,14 @@ class DetailedPostActivity : AppCompatActivity() {
 
     private fun deletePost() {
         lifecycleScope.launch(IO) {
-            apiService.deletePost(prefs.idPost.toString())
+            try{
+                apiService.deletePost(prefs.idPost.toString())
+            }catch (e:Exception) {
+                withContext(Main){
+                    Toast.makeText(this@DetailedPostActivity, "Não é possível deletar sem internet, conecte-se e tente novamente", Toast.LENGTH_LONG).show()
+                }
+                return@launch
+            }
             postsDao.delete(post)
             withContext(Main) {
                 binding.deleteButton.visibility = INVISIBLE

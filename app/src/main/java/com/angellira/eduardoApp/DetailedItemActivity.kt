@@ -92,8 +92,16 @@ class DetailedItemActivity : AppCompatActivity() {
 
     private fun deletePost() {
         lifecycleScope.launch(IO) {
-            apiService.deleteItem(prefs.idItem.toString())
+            try{
+                apiService.deleteItem(prefs.idItem.toString())
+            }catch (e:Exception) {
+                withContext(Main){
+                    Toast.makeText(this@DetailedItemActivity, "Não é possível remover sem internet, conecte-se e tente novamente", Toast.LENGTH_LONG).show()
+                }
+                return@launch
+            }
             marketItemDao.delete(marketItem!!)
+
             withContext(Main) {
                 binding.deleteButton.visibility = INVISIBLE
                 startActivity(Intent(this@DetailedItemActivity, MainActivity::class.java))

@@ -11,9 +11,9 @@ import android.util.Base64
 import android.view.Menu
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -101,7 +101,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
 
-
     private fun recyclerView(listPosts: List<Posts>) {
         recyclerView = binding.recyclerViewPosts
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -141,7 +140,7 @@ class ProfileActivity : AppCompatActivity() {
                     }
                 }
                 .setNeutralButton("Colocar imagem própria") { _, _ ->
-                    autorizacao()
+                    startActivity(Intent(this, UrlSetActivity::class.java))
                 }
                 .setNegativeButton("Não") { dialog, _ ->
                     dialog.dismiss()
@@ -173,17 +172,37 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun putAll() {
 
-        user.img = decodeBase64ToBitmap(imagemBase64!!).toString()
+//        user.img = decodeBase64ToBitmap(imagemBase64!!).toString()
         lifecycleScope.launch(IO) {
-            apiService.putUser(prefs.id.toString(), user)
+            try {
+                apiService.putUser(prefs.id.toString(), user)
+            } catch (e: Exception) {
+                withContext(Main) {
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "Não é possível alterar algo sem internet, conecte-se e tente novamente",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                return@launch
+            }
             userDao.updateUser(prefs.id.toString(), user.name, user.email, user.password)
         }
     }
 
     private fun catchInfos() {
-        user.name = binding.editTextName.text.toString()
-        user.email = binding.editTextEmailAddress.text.toString()
-        user.password = binding.editTextPassword.text.toString()
+        if (binding.editTextName.text.isNotEmpty() && binding.editTextEmailAddress.text.isNotEmpty() && binding.editTextPassword.text.isNotEmpty()){
+            user.name = binding.editTextName.text.toString()
+            user.email = binding.editTextEmailAddress.text.toString()
+            user.password = binding.editTextPassword.text.toString()
+        }
+        else{
+            binding.editTextName.text.clear()
+            binding.editTextEmailAddress.text.clear()
+            binding.editTextPassword.text.clear()
+            Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
     private fun switchLayout() {
@@ -215,8 +234,20 @@ class ProfileActivity : AppCompatActivity() {
     private fun deleteUser() {
         val pagLogin = Intent(this, SplashActivity::class.java)
         lifecycleScope.launch(IO) {
-            apiService.deleteUser(prefs.id.toString())
+            try {
+                apiService.deleteUser(prefs.id.toString())
+            } catch (e: Exception) {
+                withContext(Main) {
+                    Toast.makeText(
+                        this@ProfileActivity,
+                        "Não é possível deletar sem internet, conecte-se e tente novamente",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                return@launch
+            }
             userDao.delete(user)
+
             withContext(Main) {
                 prefs.clear()
                 prefs.isLogged = false
@@ -310,19 +341,23 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun setProfilePicture() {
-        try {
-            val image = decodeBase64ToBitmap(user.img)
-            binding.pictureProfile.setImageBitmap(image)
-        }catch (e:Exception){
-            binding.pictureProfile.load(user.img)
-        }
+
+        binding.pictureProfile.load(user.img)
+
+        //        try {
+//            val image = decodeBase64ToBitmap(user.img)
+//            binding.pictureProfile.setImageBitmap(image)
+//        }catch (e:Exception){
+//            binding.pictureProfile.load(user.img)
+//        }
 
     }
+
 
     private fun setProfilePictureAlterar() {
         try {
 //            binding.pictureProfile.setImageBitmap()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             binding.pictureProfile.load(user.img)
         }
 
