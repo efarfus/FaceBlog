@@ -110,14 +110,13 @@ class CadastroActivity : AppCompatActivity() {
             user.name = binding.boxNome.text.toString()
             user.email = binding.boxEmail.text.toString()
             user.password = binding.boxSenha.text.toString()
-            user.img = binding.boxSenha.text.toString()
+            user.img = binding.boxImageSrc.text.toString()
             val passwordConfirmation = binding.boxConfirmarSenha.text.toString()
 
             if (user.password == passwordConfirmation && user.email.isNotEmpty() && user.name.isNotEmpty() && user.password.isNotEmpty() && passwordConfirmation.isNotEmpty()) {
 
-                if (user.img.isEmpty()) {
-                    user.img =
-                        "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
+                if (user.img == "") {
+                    user.img = "https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg"
                 }
                 lifecycleScope.launch(IO) {
                     try{

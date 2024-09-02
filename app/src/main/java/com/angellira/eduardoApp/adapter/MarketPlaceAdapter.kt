@@ -43,5 +43,7 @@ class ProductAdapter(
         val productPrice: TextView = itemView.findViewById(R.id.precoDoProduto)
         val productImage: ImageView = itemView.findViewById(R.id.ImagemProduto)
         val productDescription: TextView = itemView.findViewById(R.id.productDesc)
+
+
     }
 }

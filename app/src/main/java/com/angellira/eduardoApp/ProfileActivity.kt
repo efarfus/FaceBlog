@@ -159,6 +159,7 @@ class ProfileActivity : AppCompatActivity() {
 
         catchInfos()
         putAll()
+        Toast.makeText(this, "Usuário editado", Toast.LENGTH_SHORT).show()
         startActivity(Intent(this, LoginActivity::class.java))
         prefs.clear()
     }
@@ -191,19 +192,20 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun catchInfos() {
-        if (binding.editTextName.text.isNotEmpty() && binding.editTextEmailAddress.text.isNotEmpty() && binding.editTextPassword.text.isNotEmpty()){
-            user.name = binding.editTextName.text.toString()
-            user.email = binding.editTextEmailAddress.text.toString()
-            user.password = binding.editTextPassword.text.toString()
+        val newName = binding.editTextName.text.toString()
+        val newEmail = binding.editTextEmailAddress.text.toString()
+        val newPassword = binding.editTextPassword.text.toString()
+        if (newName.isNotEmpty()) {
+            user.name = newName
         }
-        else{
-            binding.editTextName.text.clear()
-            binding.editTextEmailAddress.text.clear()
-            binding.editTextPassword.text.clear()
-            Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
+        if (newEmail.isNotEmpty()) {
+            user.email = newEmail
         }
-
+        if (newPassword.isNotEmpty()) {
+            user.password = newPassword
+        }
     }
+
 
     private fun switchLayout() {
         binding.editTextName.visibility = VISIBLE
@@ -275,6 +277,16 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun loadImage(imgUrl: String?) {
+        binding.pictureProfile.load(imgUrl) {
+            listener(
+                onError = { _, _ ->
+                    binding.pictureProfile.load("https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg")
+                }
+            )
+        }
+    }
+
     private fun autorizacao() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
@@ -342,7 +354,7 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun setProfilePicture() {
 
-        binding.pictureProfile.load(user.img)
+        loadImage(user.img)
 
         //        try {
 //            val image = decodeBase64ToBitmap(user.img)

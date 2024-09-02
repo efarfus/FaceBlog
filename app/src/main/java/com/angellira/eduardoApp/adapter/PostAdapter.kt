@@ -15,7 +15,6 @@ class PostAdapter(
     private val onItemClickListener: (String, String, String, String) -> Unit
 ) : RecyclerView.Adapter<PostAdapter.ProductViewHolder>() {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
             R.layout.activity_post,
@@ -33,7 +32,8 @@ class PostAdapter(
         }
         holder.postName.text = post.user
         holder.postText.text = post.message
-        holder.postImage.load(post.img)
+
+        holder.loadImage(post.img)
     }
 
     override fun getItemCount() = postList.size
@@ -42,5 +42,15 @@ class PostAdapter(
         val postName: TextView = itemView.findViewById(R.id.postName)
         val postText: TextView = itemView.findViewById(R.id.postText)
         val postImage: ImageView = itemView.findViewById(R.id.postImage)
+
+        fun loadImage(imgUrl: String?) {
+            postImage.load(imgUrl) {
+                listener(
+                    onError = { _, _ ->
+                        postImage.load("https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg")
+                    }
+                )
+            }
+        }
     }
 }

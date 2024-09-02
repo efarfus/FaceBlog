@@ -69,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         userDao = db.userDao()
     }
 
+
     private fun postar() {
         binding.enviarPost.setOnClickListener {
             lifecycleScope.launch {

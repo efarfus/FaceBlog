@@ -105,11 +105,13 @@ class DetailedPostActivity : AppCompatActivity() {
         }
     }
 
-    private fun moreOptions() {
-        if (post.user == user.name) {
-            binding.moreOptions.visibility = VISIBLE
-            binding.moreOptions.setOnClickListener {
-                binding.deleteButton.visibility = VISIBLE
+    private suspend fun moreOptions() {
+        withContext(Main) {
+            if (post.user == user.name) {
+                binding.moreOptions.visibility = VISIBLE
+                binding.moreOptions.setOnClickListener {
+                    binding.deleteButton.visibility = VISIBLE
+                }
             }
         }
     }
@@ -121,19 +123,28 @@ class DetailedPostActivity : AppCompatActivity() {
                 withContext(Main) {
                     binding.nameUser.text = loadedPost.user
                     binding.textUser.text = loadedPost.message
-                    binding.imageUser.load(loadedPost.img)
+                    loadImage(loadedPost.img)
                 }
                 loadedPost
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 val loadedPost = postsDao.get(prefs.idPost.toString()) ?: Posts()
                 withContext(Main) {
                     binding.nameUser.text = loadedPost.user
                     binding.textUser.text = loadedPost.message
-                    binding.imageUser.load(loadedPost.img)
+                    loadImage(loadedPost.img)
                 }
                 loadedPost
             }
+        }
+    }
 
+    private fun loadImage(imgUrl: String?) {
+        binding.imageUser.load(imgUrl) {
+            listener(
+                onError = { _, _ ->
+                    binding.imageUser.load("https://static.vecteezy.com/system/resources/thumbnails/005/129/844/small_2x/profile-user-icon-isolated-on-white-background-eps10-free-vector.jpg")
+                }
+            )
         }
     }
 
