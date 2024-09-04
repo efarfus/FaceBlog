@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
@@ -26,6 +27,8 @@ import com.angellira.eduardoApp.preferences.Preferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.UUID
+import java.util.UUID.randomUUID
 
 class AddMarketItemActivity : AppCompatActivity() {
     private lateinit var binding: ActivityAddMarketItemBinding
@@ -39,6 +42,8 @@ class AddMarketItemActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding()
+        window.statusBarColor = ContextCompat.getColor(this, R.color.corfundo)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.corfundo)
         setupView()
         setSupportActionBar(binding.myToolbar)
 
@@ -78,7 +83,8 @@ class AddMarketItemActivity : AppCompatActivity() {
                 binding.boxPreco.text.toString().isNotEmpty() &&
                 binding.boxImageSrc.text.toString().isNotEmpty()
             ) {
-
+                prefs.idItemIncrement = marketItem.id + 1
+                marketItem.id = prefs.idItemIncrement!!
                 marketItem.title = binding.boxTitulo.text.toString()
                 marketItem.description = binding.boxDescricao.text.toString()
                 marketItem.price = binding.boxPreco.text.toString()

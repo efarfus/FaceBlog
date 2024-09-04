@@ -11,12 +11,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.angellira.eduardoApp.adapter.PostAdapter
 import com.angellira.eduardoApp.database.AppDatabase
 import com.angellira.eduardoApp.database.dao.PostsDao
@@ -41,10 +43,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var postsDao: PostsDao
     private lateinit var userDao: UserDao
     private val apiService = ApiServiceFaceBlog.retrofitService
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.corfundo)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.corfundo)
         setupView()
         setSupportActionBar(binding.myToolbar)
 
@@ -52,6 +57,10 @@ class MainActivity : AppCompatActivity() {
             database()
             setUser()
             loadPosts()
+            swipeRefreshLayout = binding.swipeRefreshLayout
+            swipeRefreshLayout.setOnRefreshListener {
+                loadPosts()
+            }
             withContext(Main)
             {
                 marketplace(Intent(this@MainActivity, MarketplaceActivity::class.java))
@@ -125,6 +134,8 @@ class MainActivity : AppCompatActivity() {
                 withContext(Main) {
                     recyclerView(postsList.reversed())
                 }
+            }finally {
+                swipeRefreshLayout.isRefreshing = false
             }
 
         }

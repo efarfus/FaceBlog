@@ -13,8 +13,8 @@ android {
         applicationId = "com.angellira.eduardoApp"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.1.2"
+        versionCode = 4
+        versionName = "1.1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(libs.androidx.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

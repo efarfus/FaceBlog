@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MarketItem(
     @PrimaryKey (autoGenerate = true)
-    val id: Long = 0,
+    var id: Long = 0,
     var user: String = "",
     var img: String = "",
     var price: String = "",

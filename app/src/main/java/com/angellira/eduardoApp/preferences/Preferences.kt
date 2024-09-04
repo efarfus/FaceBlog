@@ -26,6 +26,12 @@ class Preferences(context: Context) {
             sharedPreferences.edit().putString("idItem", value).apply()
         }
 
+    var idItemIncrement: Long?
+        get() = sharedPreferences.getLong("idItemIncrement", 1)
+        set(value) {
+            sharedPreferences.edit().putLong("idItemIncrement", 1).apply()
+        }
+
     var id: String?
         get() = sharedPreferences.getString("id", null)
         set(value) {

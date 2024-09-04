@@ -57,16 +57,23 @@
         app:srcCompat="@drawable/writing_294026" />
 
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewPosts"
-        android:layout_width="409dp"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/caixaPost"
-/>
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/caixaPost">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewPosts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+             />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 
     <ImageView
@@ -78,23 +85,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.497"
         app:srcCompat="@drawable/roxo" />
+
     <EditText
         android:id="@+id/caixaPost"
-        android:layout_width="310dp"
+        android:layout_width="300dp"
         android:layout_height="49dp"
-        android:layout_margin="30dp"
+        android:layout_margin="25dp"
         android:layout_marginTop="28dp"
-        android:textColor="@color/black"
-        android:layout_marginEnd="10dp"
         android:background="@drawable/border"
         android:hint="No que você está pensando, ${user.name}?"
         android:maxLines="4"
-        android:padding="15dp"
+        android:padding="10dp"
+        android:textColor="@color/black"
         android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.117"
+        app:layout_constraintEnd_toStartOf="@+id/enviarPost"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/options" />
 
@@ -103,10 +108,11 @@
         android:layout_width="43dp"
         android:layout_height="49dp"
         android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:background="@drawable/baseline_send_24"
         android:elevation="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/caixaPost"
-        app:layout_constraintStart_toEndOf="@+id/caixaPost"
-        app:layout_constraintTop_toTopOf="@+id/caixaPost"
-        android:background="@drawable/baseline_send_24"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/caixaPost" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
