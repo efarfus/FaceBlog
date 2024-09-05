@@ -30,6 +30,7 @@
         android:hint="Eduardo"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:height="48dp"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,6 +46,8 @@
 
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
+        android:height="48dp"
+
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,10 +58,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
+        android:ems="10"
+        android:height="48dp"
         android:hint="Imagem"
         android:inputType="textEmailAddress"
-        android:ems="10"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@+id/boxEmail"
         app:layout_constraintTop_toBottomOf="@+id/boxEmail" />
 
@@ -68,6 +72,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:ems="10"
+        android:height="48dp"
         android:hint="*******"
         android:inputType="textPassword"
         android:minHeight="48dp"
@@ -82,11 +87,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="68dp"
         android:ems="10"
-
         android:hint="*******"
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:textColor="@color/black"
+        android:height="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/boxSenha" />
