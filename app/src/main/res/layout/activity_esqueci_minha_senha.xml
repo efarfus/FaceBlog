@@ -9,42 +9,45 @@
     tools:context=".EsqueciMinhaSenhaActivity">
 
 
-    <TextView
-        android:id="@+id/title"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="#1565C7"
-        android:text="FaceBlog"
-        android:textColor="#ffffff"
-        android:textColorLink="#ffffff"
-        android:textSize="70sp"
+        android:layout_height="wrap_content"
+        android:background="#8935b2"
+        android:elevation="4dp"
+        android:textColor="#000000"
+        android:textColorLink="#000000"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        />
 
 
     <EditText
-        android:id="@+id/boxEmail"
+        android:id="@+id/boxDescricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="116dp"
         android:ems="10"
+        android:textColor="@color/black"
         android:hint="seuemail@mail.com"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
     <TextView
         android:id="@+id/textEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email"
-        app:layout_constraintBottom_toTopOf="@+id/boxEmail"
-        app:layout_constraintStart_toStartOf="@+id/boxEmail"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintBottom_toTopOf="@+id/boxDescricao"
+        app:layout_constraintStart_toStartOf="@+id/boxDescricao"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintVertical_bias="1.0" />
 
 
@@ -65,22 +68,35 @@
         android:layout_height="wrap_content"
         android:text="Confirme seu email:"
         android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/boxEmail"
+        app:layout_constraintBottom_toTopOf="@+id/boxDescricao"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
+
+
+    <ImageView
+        android:id="@+id/logoFundo"
+        android:layout_width="329dp"
+        android:layout_height="546dp"
+        android:alpha="0.1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/roxo" />
 
     <Button
         android:id="@+id/enviar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#1565C6"
+        android:backgroundTint="#8935b2"
         android:text="Enviar"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/rodape"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/boxEmail"
+        app:layout_constraintTop_toBottomOf="@+id/boxDescricao"
         app:layout_constraintVertical_bias="0.067" />
 
 

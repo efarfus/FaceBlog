@@ -14,6 +14,30 @@ class Preferences(context: Context) {
             sharedPreferences.edit().putString("name", value).apply()
         }
 
+    var img: String?
+        get() = sharedPreferences.getString("img", null)
+        set(value) {
+            sharedPreferences.edit().putString("img", value).apply()
+        }
+
+    var idItem: String?
+        get() = sharedPreferences.getString("idItem", null)
+        set(value) {
+            sharedPreferences.edit().putString("idItem", value).apply()
+        }
+
+    var idItemIncrement: Long?
+        get() = sharedPreferences.getLong("idItemIncrement", 1)
+        set(value) {
+            sharedPreferences.edit().putLong("idItemIncrement", 1).apply()
+        }
+
+    var id: String?
+        get() = sharedPreferences.getString("id", null)
+        set(value) {
+            sharedPreferences.edit().putString("id", value).apply()
+        }
+
     var email: String?
         get() = sharedPreferences.getString("email", null)
         set(value) {
@@ -36,4 +60,9 @@ class Preferences(context: Context) {
         sharedPreferences.edit().clear().apply()
     }
 
+    var idPost: String?
+        get() = sharedPreferences.getString("idPost", null)
+        set(value) {
+            sharedPreferences.edit().putString("idPost", value).apply()
+        }
 }

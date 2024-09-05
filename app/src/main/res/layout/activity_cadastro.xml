@@ -7,18 +7,34 @@
     android:layout_height="match_parent"
     tools:context=".CadastroActivity">
 
-    <TextView
-        android:id="@+id/title"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="#1565C7"
-        android:text="FaceBlog"
-        android:textColor="#ffffff"
-        android:textColorLink="#ffffff"
-        android:textSize="70sp"
+        android:layout_height="wrap_content"
+        android:background="#8935b2"
+        android:elevation="4dp"
+        android:textColor="#000000"
+        android:textColorLink="#000000"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    <EditText
+        android:id="@+id/boxNome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="78dp"
+        android:ems="10"
+        android:hint="Eduardo"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:height="48dp"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar" />
 
     <EditText
         android:id="@+id/boxEmail"
@@ -27,11 +43,28 @@
         android:layout_marginTop="49dp"
         android:ems="10"
         android:hint="seuemail@mail.com"
+
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
+        android:height="48dp"
+
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/boxNome" />
+
+    <EditText
+        android:id="@+id/boxImageSrc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:ems="10"
+        android:height="48dp"
+        android:hint="Imagem"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="@+id/boxEmail"
+        app:layout_constraintTop_toBottomOf="@+id/boxEmail" />
 
     <EditText
         android:id="@+id/boxSenha"
@@ -39,12 +72,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:ems="10"
+        android:height="48dp"
         android:hint="*******"
         android:inputType="textPassword"
         android:minHeight="48dp"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/boxEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/boxImageSrc" />
 
     <EditText
         android:id="@+id/boxConfirmarSenha"
@@ -55,10 +90,12 @@
         android:hint="*******"
         android:inputType="textPassword"
         android:minHeight="48dp"
+        android:textColor="@color/black"
+        android:height="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/boxSenha" />
+
 
     <TextView
         android:id="@+id/TextConfirmarSenha"
@@ -77,7 +114,17 @@
         android:text="Email"
         app:layout_constraintBottom_toTopOf="@+id/boxEmail"
         app:layout_constraintStart_toStartOf="@+id/boxEmail"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <TextView
+        android:id="@+id/textImageSrc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Imagem de perfil (opcional)"
+        app:layout_constraintBottom_toTopOf="@+id/boxImageSrc"
+        app:layout_constraintStart_toStartOf="@+id/boxImageSrc"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -101,18 +148,6 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:id="@+id/cadastrar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:text="Criar conta"
-        android:textColor="#1565C5"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/boxConfirmarSenha" />
 
     <TextView
         android:id="@+id/textNome"
@@ -121,20 +156,35 @@
         android:text="Nome completo"
         app:layout_constraintBottom_toTopOf="@+id/boxNome"
         app:layout_constraintStart_toStartOf="@+id/boxNome"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
         app:layout_constraintVertical_bias="1.0" />
 
-    <EditText
-        android:id="@+id/boxNome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="78dp"
-        android:ems="10"
-        android:hint="Eduardo"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
+
+    <ImageView
+        android:id="@+id/logoFundo"
+        android:layout_width="329dp"
+        android:layout_height="546dp"
+        android:alpha="0.1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/my_toolbar"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/roxo" />
+
+    <Button
+        android:id="@+id/cadastrar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:text="Criar conta"
+        android:textColor="#5e17eb"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/boxConfirmarSenha"
+        app:layout_constraintVertical_bias="0.316" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
